@@ -26,8 +26,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        cc = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+        cc = GetComponentInChildren<CharacterController>();
+        animator = GetComponentInChildren<Animator>();
 
         dir = Vector3.forward;
 
