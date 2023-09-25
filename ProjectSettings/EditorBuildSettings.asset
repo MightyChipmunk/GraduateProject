@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: d1c3109bdb54ad54c8a2b2838528e640
+    path: Assets/Hoon/Scenes/Test_Hoon.unity
+    guid: bab40fc7f363bb941940eaf8776937fd
+  - enabled: 1
+    path: Assets/Hoon/Scenes/BattleScene.unity
+    guid: 20ce932d75015af4ba5cd5682186ef12
   m_configObjects: {}
