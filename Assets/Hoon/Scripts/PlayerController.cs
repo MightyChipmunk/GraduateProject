@@ -8,8 +8,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float moveSpeed = 6;
     [SerializeField]
-    float rotSpeed = 30;
-    [SerializeField]
     float jumpPower = 10;
 
     CharacterController cc;

@@ -3,6 +3,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class Team
+{
+    List<TeamMember> members = new List<TeamMember>();
+    public List<TeamMember> Members
+    {
+        get { return members; }
+        set
+        {
+            members = value;
+            int idx = 0;
+            foreach (TeamMember member in members)
+            {
+                member.SetIndex = idx++;
+            }
+        }
+    }
+
+    public Team(List<TeamMember> list)
+    {
+        members = list;
+        int idx = 0;
+        foreach (TeamMember member in members)
+        {
+            member.SetIndex = idx++;
+        }
+    }
+
+    public TeamMember GetIndexMember(int index)
+    {
+        return members[index];
+    }
+}
+
+
 [Serializable]
 public class TeamMember
 {
@@ -38,7 +72,9 @@ public class TeamMember
     public GameObject Instantiate()
     {
         GameObject go = GameObject.Instantiate(Resources.Load<GameObject>(modelName));
-        Stat stat = go.AddComponent<Stat>();
+        Stat stat = go.GetComponent<Stat>();
+        if (stat.hpBar != null)
+            stat.hpBar.maxValue = hp;
         stat.HP = hp;
         stat.Name = name;
         stat.SetIndex = index;

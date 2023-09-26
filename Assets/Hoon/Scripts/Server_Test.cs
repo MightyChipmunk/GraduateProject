@@ -7,7 +7,6 @@ public class Server_Test : MonoBehaviour
 {
     public static Server_Test Instance;
 
-    public GameObject enemy;
     public List<TeamMember> playerMembers;
     public List<TeamMember> enemyMembers;
 

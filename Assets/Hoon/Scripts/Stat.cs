@@ -1,15 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Stat : MonoBehaviour
 {
+    public Slider hpBar;
+
     [SerializeField]
     int hp = 0;
     public int HP
     {
         get { return hp; }
-        set { hp = value; }
+        set 
+        { 
+            hp = value;
+            if (hpBar != null)
+                hpBar.value = hp;
+        }
     }
 
     [SerializeField]
