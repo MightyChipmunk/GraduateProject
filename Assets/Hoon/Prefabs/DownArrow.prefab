@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6245054829926459653}
   - component: {fileID: 200736566736323058}
   - component: {fileID: 597101134250378972}
+  - component: {fileID: 6354640213205069590}
   m_Layer: 5
   m_Name: DownArrow
   m_TagString: Untagged
@@ -75,3 +76,15 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6354640213205069590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3958684672939850696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83b2facbb2639434698165378a78cf8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

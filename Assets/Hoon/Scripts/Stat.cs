@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class Stat : MonoBehaviour
 {
     public Slider hpBar;
+    public TMP_Text chName;
 
     [SerializeField]
     int hp = 0;
@@ -17,7 +18,9 @@ public class Stat : MonoBehaviour
         { 
             hp = value;
             if (hpBar != null)
+            {
                 hpBar.value = hp;
+            }
         }
     }
 
@@ -26,13 +29,26 @@ public class Stat : MonoBehaviour
     public string Name 
     { 
         get { return _name; } 
-        set { _name = value; }
+        set 
+        { 
+            _name = value;
+            if (chName != null)
+                chName.text = _name;
+        }
     }
 
     [SerializeField]
     int index;
     public int GetIndex { get { return index; } }
     public int SetIndex { set { index = value; } }
+
+    [SerializeField]
+    int strength = 10;
+    public int Strength { get { return strength; } set { strength = value; } }
+
+    [SerializeField]
+    int defense = 3;
+    public int Defense { get { return defense; } set { defense = value; } }
 
     public int[] Near()
     {
@@ -41,5 +57,11 @@ public class Stat : MonoBehaviour
         near[1] = index + 1;
 
         return near;
+    }
+
+    public void Attack(Stat enemyStat)
+    {
+        enemyStat.HP -= (strength - enemyStat.defense);
+        BattleManager.Instance.EnemyInfoSet(enemyStat);
     }
 }

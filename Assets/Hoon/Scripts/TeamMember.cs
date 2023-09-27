@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Team
 {
@@ -44,14 +46,9 @@ public class TeamMember
 
     [SerializeField]
     int hp = 0;
-    public int HP
-    {
-        get { return hp; }
-    }
 
     [SerializeField]
     string name;
-    public string Name { get { return name; } }
 
     [SerializeField]
     int index;
@@ -60,7 +57,9 @@ public class TeamMember
 
     [SerializeField]
     string modelName;
-    public string ModelName { get { return modelName; } }
+
+    [SerializeField]
+    int strength;
 
     public TeamMember(int hp, string name, string modelName)
     {
@@ -78,6 +77,21 @@ public class TeamMember
         stat.HP = hp;
         stat.Name = name;
         stat.SetIndex = index;
+
+        return go;
+    }
+
+    public GameObject Instantiate(GameObject chInfo)
+    {
+        GameObject go = GameObject.Instantiate(Resources.Load<GameObject>(modelName));
+        Stat stat = go.GetComponent<Stat>();
+        stat.hpBar = chInfo.GetComponentInChildren<Slider>();
+        stat.hpBar.maxValue = hp;
+        stat.HP = hp;
+        stat.chName = chInfo.GetComponentInChildren<TMP_Text>();
+        stat.Name = name;
+        stat.SetIndex = index;
+        stat.Strength= strength;
 
         return go;
     }

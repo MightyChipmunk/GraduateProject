@@ -47,7 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpBar: {fileID: 4476140412581496528}
-  nameText: {fileID: 0}
   hp: 0
   _name: 
   index: 0
@@ -439,8 +438,8 @@ RectTransform:
   m_GameObject: {fileID: 8505326212863285254}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.01, y: 0.02, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3425419495598017926}
   m_Father: {fileID: 5737206527885951630}

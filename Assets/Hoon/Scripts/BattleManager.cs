@@ -1,13 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
     public GameObject downArrow;
+    public GameObject charInfo;
+    public GameObject enemyInfo;
+    public Transform content;
+    public Transform canvas;
+    public Button attack;
     public static BattleManager Instance;
 
-    int selected;
+    int selected = 0;
     public int Selected
     {
         get { return selected; }
@@ -23,14 +30,18 @@ public class BattleManager : MonoBehaviour
             }
             if (selected != value)
             {
-                iTween.MoveTo(downArrow, iTween.Hash("x", value * -3, "y", 4, "z", 6, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+                iTween.MoveTo(downArrow, iTween.Hash("x", enemyList[value].transform.position.x, "y", 4, "z", enemyList[value].transform.position.z, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
                 iTween.RotateTo(Camera.main.transform.parent.gameObject, iTween.Hash("y", value * -10, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
             }
-            selected = value; 
+            selected = value;
+            EnemyInfoSet(enemyList[selected].GetComponent<Stat>());
         }
     }
     List<GameObject> playerList = new List<GameObject>();
     List<GameObject> enemyList = new List<GameObject>();
+
+    [SerializeField]
+    Queue<GameObject> turn = new Queue<GameObject>();
 
     // Start is called before the first frame update
     void Awake()
@@ -47,6 +58,15 @@ public class BattleManager : MonoBehaviour
     private void Start()
     {
         StartBattle(Server_Test.Instance.playerTeam, Server_Test.Instance.enemyTeam);
+
+        turn.Enqueue(playerList[0]);
+        turn.Enqueue(playerList[1]);
+
+        attack.onClick.AddListener(() =>
+        {
+            turn.Peek().GetComponent<Stat>().Attack(enemyList[selected].GetComponent<Stat>());
+        });
+        attack.onClick.AddListener(EndTurn);
     }
 
     private void Update()
@@ -71,11 +91,24 @@ public class BattleManager : MonoBehaviour
         }
         foreach (TeamMember mem in playerTeam.Members)
         {
-            GameObject newMem = mem.Instantiate();
+            GameObject info = Instantiate(charInfo, content);
+            GameObject newMem = mem.Instantiate(info);
             newMem.transform.position = new Vector3(-3 * mem.GetIndex, 0, 0);
             playerList.Add(newMem);
         }
 
-        selected = 0;
+        Selected = 0;
+    }
+
+    public void EnemyInfoSet(Stat stat)
+    {
+        enemyInfo.GetComponentInChildren<Slider>().maxValue = stat.hpBar.maxValue;
+        enemyInfo.GetComponentInChildren<Slider>().value = stat.hpBar.value;
+        enemyInfo.GetComponentInChildren<TMP_Text>().text = stat.Name;
+    }
+
+    void EndTurn()
+    {
+        turn.Enqueue(turn.Dequeue());
     }
 }
