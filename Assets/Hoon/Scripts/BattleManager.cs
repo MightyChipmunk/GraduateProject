@@ -19,7 +19,7 @@ public class BattleManager : MonoBehaviour
     {
         get { return selected; }
         set 
-        { 
+        {
             if (value < 0)
             {
                 value = enemyList.Count - 1;
@@ -110,5 +110,14 @@ public class BattleManager : MonoBehaviour
     void EndTurn()
     {
         turn.Enqueue(turn.Dequeue());
+    }
+
+    public void MoveCam()
+    {
+        if (playerList.Contains(turn.Peek()))
+        {
+            Transform tr = turn.Peek().transform;
+            iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", tr.position.x, "y", tr.position.y, "z", tr.position.z, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+        }
     }
 }

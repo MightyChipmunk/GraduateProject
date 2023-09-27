@@ -8,6 +8,8 @@ public class Stat : MonoBehaviour
 {
     public Slider hpBar;
     public TMP_Text chName;
+    Animator anim;
+    AnimationEvent animEvent;
 
     [SerializeField]
     int hp = 0;
@@ -61,7 +63,13 @@ public class Stat : MonoBehaviour
 
     public void Attack(Stat enemyStat)
     {
-        enemyStat.HP -= (strength - enemyStat.defense);
-        BattleManager.Instance.EnemyInfoSet(enemyStat);
+        anim.SetTrigger("Attack");
+        animEvent.enemyStat = enemyStat;
+    }
+
+    private void Start()
+    {
+        anim = GetComponentInChildren<Animator>();
+        animEvent = GetComponentInChildren<AnimationEvent>();
     }
 }
