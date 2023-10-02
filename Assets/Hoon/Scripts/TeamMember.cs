@@ -61,6 +61,12 @@ public class TeamMember
     [SerializeField]
     int strength;
 
+    [SerializeField]
+    int defence;
+
+    [SerializeField]
+    int speed;
+
     public TeamMember(int hp, string name, string modelName)
     {
         this.hp = hp;
@@ -68,6 +74,7 @@ public class TeamMember
         this.modelName = modelName;
     }
 
+    //Instantiate for Enemy
     public GameObject Instantiate()
     {
         GameObject go = GameObject.Instantiate(Resources.Load<GameObject>(modelName));
@@ -77,10 +84,14 @@ public class TeamMember
         stat.HP = hp;
         stat.Name = name;
         stat.SetIndex = index;
+        stat.Strength = strength;
+        stat.Defense = defence;
+        stat.Speed = speed;
 
         return go;
     }
 
+    //Instantiate for Player
     public GameObject Instantiate(GameObject chInfo)
     {
         GameObject go = GameObject.Instantiate(Resources.Load<GameObject>(modelName));
@@ -92,6 +103,8 @@ public class TeamMember
         stat.Name = name;
         stat.SetIndex = index;
         stat.Strength= strength;
+        stat.Defense = defence;
+        stat.Speed = speed;
 
         return go;
     }

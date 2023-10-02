@@ -52,6 +52,10 @@ public class Stat : MonoBehaviour
     int defense = 3;
     public int Defense { get { return defense; } set { defense = value; } }
 
+    [SerializeField]
+    int speed = 5;
+    public int Speed { get { return speed; } set { speed = value; } }
+
     public int[] Near()
     {
         int[] near = new int[2];
@@ -64,6 +68,7 @@ public class Stat : MonoBehaviour
     public void Attack(Stat enemyStat)
     {
         anim.SetTrigger("Attack");
+        BattleManager.Instance.isAction = true;
         animEvent.enemyStat = enemyStat;
     }
 

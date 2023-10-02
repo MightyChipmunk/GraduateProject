@@ -12,6 +12,7 @@ public class BattleManager : MonoBehaviour
     public Transform content;
     public Transform canvas;
     public Button attack;
+    public bool isAction = false;
     public static BattleManager Instance;
 
     int selected = 0;
@@ -59,26 +60,40 @@ public class BattleManager : MonoBehaviour
     {
         StartBattle(Server_Test.Instance.playerTeam, Server_Test.Instance.enemyTeam);
 
-        turn.Enqueue(playerList[0]);
-        turn.Enqueue(playerList[1]);
 
         attack.onClick.AddListener(() =>
         {
-            turn.Peek().GetComponent<Stat>().Attack(enemyList[selected].GetComponent<Stat>());
+            if (myTurn() && !isAction)
+            {
+                turn.Peek().GetComponent<Stat>().Attack(enemyList[selected].GetComponent<Stat>());
+            }
         });
-        attack.onClick.AddListener(EndTurn);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (myTurn() && !isAction)
         {
-            Selected += 1;
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                Selected += 1;
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                Selected -= 1;
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+
+        //юс╫ц
+        if (Input.GetKeyDown(KeyCode.Z))
         {
-            Selected -= 1;
+            if (!myTurn() && !isAction)
+            {
+                turn.Peek().GetComponent<Stat>().Attack(playerList[0].GetComponent<Stat>());
+            }
         }
+
+        downArrow.SetActive(myTurn());
     }
 
     void StartBattle(Team playerTeam, Team enemyTeam)
@@ -98,6 +113,8 @@ public class BattleManager : MonoBehaviour
         }
 
         Selected = 0;
+        TurnEnque();
+        MoveCam();
     }
 
     public void EnemyInfoSet(Stat stat)
@@ -107,17 +124,68 @@ public class BattleManager : MonoBehaviour
         enemyInfo.GetComponentInChildren<TMP_Text>().text = stat.Name;
     }
 
-    void EndTurn()
+    public void EndTurn()
     {
         turn.Enqueue(turn.Dequeue());
+
+        if (!myTurn())
+        {
+            EnemyInfoSet(turn.Peek().GetComponent<Stat>());
+        }
+        else
+        {
+            EnemyInfoSet(enemyList[selected].GetComponent<Stat>());
+        }
     }
 
     public void MoveCam()
     {
-        if (playerList.Contains(turn.Peek()))
+        if (myTurn())
         {
             Transform tr = turn.Peek().transform;
             iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", tr.position.x, "y", tr.position.y, "z", tr.position.z, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
         }
+        else
+        {
+            Transform tr = turn.Peek().transform;
+            iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", tr.position.x, "y", tr.position.y, "z", tr.position.z - 2, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+            EnemyInfoSet(tr.GetComponent<Stat>());
+        }
+    }
+
+    void TurnEnque()
+    {
+        List<GameObject> allList = new List<GameObject> ();
+        foreach (GameObject go in playerList)
+        {
+            allList.Add(go);
+        }
+        foreach (GameObject go in enemyList)
+        {
+            allList.Add(go);
+        }
+
+        int cnt = allList.Count;
+
+        for (int i = 0; i < cnt; i++)
+        {
+            int max = 0;
+            int idx = 0;
+            for (int j = 0; j < allList.Count; j++)
+            {
+                if (allList[j].GetComponent<Stat>().Speed >= max)
+                {
+                    max = allList[j].GetComponent<Stat>().Speed;
+                    idx = j;
+                }
+            }
+            turn.Enqueue(allList[idx]);
+            allList.RemoveAt(idx);
+        }
+    }
+
+    bool myTurn()
+    {
+        return playerList.Contains(turn.Peek());
     }
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -563,32 +563,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMembers:
-  - hp: 123
+  - hp: 100
     name: p1
     index: 0
     modelName: Player_Battle
     strength: 40
-  - hp: 231
+    defence: 0
+    speed: 30
+  - hp: 200
     name: p2
     index: 0
     modelName: Player_Battle
     strength: 20
+    defence: 0
+    speed: 20
   enemyMembers:
   - hp: 110
     name: e1
     index: 0
     modelName: Enemy
-    strength: 0
+    strength: 20
+    defence: 0
+    speed: 10
   - hp: 110
     name: e2
     index: 0
     modelName: Enemy
-    strength: 0
+    strength: 30
+    defence: 0
+    speed: 50
   - hp: 220
     name: e3
     index: 0
     modelName: Enemy
-    strength: 0
+    strength: 10
+    defence: 0
+    speed: 5
 --- !u!4 &1371906060
 Transform:
   m_ObjectHideFlags: 0

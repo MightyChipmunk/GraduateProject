@@ -4,22 +4,28 @@ using UnityEngine;
 
 public class AnimationEvent : MonoBehaviour
 {
-    Stat playerStat;
+    protected Stat playerStat;
     public Stat enemyStat;
 
-    private void Start()
+    protected virtual void Start()
     {
         playerStat = GetComponentInParent<Stat>();
     }
 
-    public void Attack()
+    protected virtual void Attack()
     {
-        enemyStat.HP -= (playerStat.Strength - enemyStat.Defense);
-        BattleManager.Instance.EnemyInfoSet(enemyStat);
+
     }
 
-    public void EndMotion()
+    protected virtual void Skill()
     {
+
+    }
+
+    protected virtual void EndMotion()
+    {
+        BattleManager.Instance.EndTurn();
         BattleManager.Instance.MoveCam();
+        BattleManager.Instance.isAction = false;
     }
 }
