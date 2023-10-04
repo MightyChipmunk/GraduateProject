@@ -22,28 +22,29 @@ public class BattleManager : MonoBehaviour
         get { return selected; }
         set 
         {
-            if (value < 0)
+            if (selected != value && !IsGameOver())
             {
-                value = enemyList.Count - 1;
-            }
-            else if (value >= enemyList.Count)
-            {
-                value = 0;
-            }
-            if (selected != value)
-            {
+                if (value < 0)
+                {
+                    value = enemyList.Count - 1;
+                }
+                else if (value >= enemyList.Count)
+                {
+                    value = 0;
+                }
                 iTween.MoveTo(downArrow, iTween.Hash("x", enemyList[value].transform.position.x, "y", 4, "z", enemyList[value].transform.position.z, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
-                iTween.RotateTo(Camera.main.transform.parent.gameObject, iTween.Hash("y", value * -10, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+                Transform tr = turn[0].transform;
+                Vector3 dir = Quaternion.LookRotation(enemyList[value].transform.position - tr.position).eulerAngles;
+                iTween.RotateTo(Camera.main.transform.parent.gameObject, iTween.Hash("y", dir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
             }
             selected = value;
-            EnemyInfoSet(enemyList[selected].GetComponent<Stat>());
+            if (!IsGameOver())
+                EnemyInfoSet(enemyList[selected].GetComponent<Stat>());
         }
     }
     List<GameObject> playerList = new List<GameObject>();
     List<GameObject> enemyList = new List<GameObject>();
-
-    [SerializeField]
-    Queue<GameObject> turn = new Queue<GameObject>();
+    List<GameObject> turn = new List<GameObject>();
 
     // Start is called before the first frame update
     void Awake()
@@ -59,14 +60,14 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
-        StartBattle(Server_Test.Instance.playerTeam, Server_Test.Instance.enemyTeam);
+        StartCoroutine(StartBattle(Server_Test.Instance.playerTeam, Server_Test.Instance.enemyTeam));
 
 
         attack.onClick.AddListener(() =>
         {
-            if (myTurn() && !isAction)
+            if (myTurn() && !isAction && !IsGameOver())
             {
-                turn.Peek().GetComponent<Stat>().Attack(enemyList[selected].GetComponent<Stat>());
+                turn[0].GetComponent<Stat>().Attack(enemyList[selected].GetComponent<Stat>());
             }
         });
     }
@@ -86,16 +87,18 @@ public class BattleManager : MonoBehaviour
         }
 
         //юс╫ц
-        if (!myTurn() && !isAction)
+        if (!myTurn() && !isAction && !IsGameOver())
         {
-            turn.Peek().GetComponent<Stat>().Attack(playerList[0].GetComponent<Stat>());
+            turn[0].GetComponent<Stat>().Attack(playerList[0].GetComponent<Stat>());
         }
 
-        downArrow.SetActive(myTurn());
+        downArrow.SetActive(myTurn() && !IsGameOver());
     }
 
-    void StartBattle(Team playerTeam, Team enemyTeam)
+    IEnumerator StartBattle(Team playerTeam, Team enemyTeam)
     {
+        isAction = true;
+
         foreach (TeamMember mem in enemyTeam.Members)
         {
             GameObject newMem = mem.Instantiate();
@@ -114,6 +117,9 @@ public class BattleManager : MonoBehaviour
         Selected = 0;
         InitTurn();
         MoveCam();
+
+        yield return new WaitForSeconds(3f);
+        isAction = false;
     }
 
     public void EnemyInfoSet(Stat stat)
@@ -125,11 +131,13 @@ public class BattleManager : MonoBehaviour
 
     public void EndTurn()
     {
+        if (IsGameOver()) return;
+
         TurnEnqueue(TurnDequeue());
 
         if (!myTurn())
         {
-            EnemyInfoSet(turn.Peek().GetComponent<Stat>());
+            EnemyInfoSet(turn[0].GetComponent<Stat>());
         }
         else
         {
@@ -139,14 +147,18 @@ public class BattleManager : MonoBehaviour
 
     public void MoveCam()
     {
+        if (IsGameOver()) return;
+
         if (myTurn())
         {
-            Transform tr = turn.Peek().transform;
+            Transform tr = turn[0].transform;
+            Vector3 dir = Quaternion.LookRotation(enemyList[selected].transform.position - tr.position).eulerAngles;
+            iTween.RotateTo(Camera.main.transform.parent.gameObject, iTween.Hash("y", dir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
             iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", tr.position.x, "y", tr.position.y, "z", tr.position.z, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
         }
         else
         {
-            Transform tr = turn.Peek().transform;
+            Transform tr = turn[0].transform;
             iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", tr.position.x, "y", tr.position.y, "z", tr.position.z - 5.5, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
             EnemyInfoSet(tr.GetComponent<Stat>());
         }
@@ -154,6 +166,13 @@ public class BattleManager : MonoBehaviour
 
     void InitTurn()
     {
+        turn.Clear();
+        foreach (GameObject go in turnInfoList)
+        {
+            Destroy(go);
+        }
+        turnInfoList.Clear();
+
         List<GameObject> allList = new List<GameObject> ();
         foreach (GameObject go in playerList)
         {
@@ -183,19 +202,18 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    bool myTurn()
+    public bool myTurn()
     {
-        return playerList.Contains(turn.Peek());
+        return playerList.Contains(turn[0]);
     }
 
     List<GameObject> turnInfoList = new List<GameObject>();
     void TurnEnqueue(GameObject go)
     {
-        turn.Enqueue(go);
+        turn.Add(go);
 
         GameObject info = Instantiate(turnInfo, canvas);
-        info.transform.Find("IconMask").transform.Find("Image").GetComponent<Image>().sprite = Resources.Load<Sprite>(go.GetComponent<Stat>().Name + "Icon");
-        info.transform.Find("Name").GetComponent<TMP_Text>().text = go.GetComponent<Stat>().Name;
+        info.GetComponent<TurnInfo>().Init(Resources.Load<Sprite>(go.GetComponent<Stat>().ModelName + "Icon"), go.GetComponent<Stat>().Name, go);
         info.transform.position = new Vector3(150, 930 - 100 * turnInfoList.Count, 0);
         info.transform.localScale = Vector3.zero;
         iTween.ScaleTo(info, iTween.Hash("x", 1, "y", 1, "z", 1, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
@@ -213,6 +231,55 @@ public class BattleManager : MonoBehaviour
             iTween.MoveTo(go, iTween.Hash("y", go.transform.position.y + 100, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
         }
 
-        return turn.Dequeue();
+        GameObject dequeue = turn[0];
+        turn.RemoveAt(0);
+        return dequeue;
+    }
+
+    void TurnDelete(GameObject target)
+    {
+        int idx = 0;
+        for (int i = 0; i < turnInfoList.Count; i++)
+        {
+            if (turnInfoList[i].GetComponent<TurnInfo>().target == target)
+            {
+                GameObject tmp = turnInfoList[i];
+                turnInfoList.RemoveAt(i);
+                Destroy(tmp);
+                idx = i;
+                break;
+            }
+        }
+
+        for (int i = idx; i < turnInfoList.Count; i++)
+        {
+            iTween.MoveTo(turnInfoList[i], iTween.Hash("y", turnInfoList[i].transform.position.y + 100, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
+        }
+
+        turn.Remove(target);
+    }
+
+    public void CharDestroy(GameObject go)
+    {
+        if (playerList.Contains(go))
+        {
+            playerList.Remove(go);
+            Destroy(go);
+            TurnDelete(go);
+        }
+        else if (enemyList.Contains(go))
+        {
+            enemyList.Remove(go);
+            Destroy(go);
+            TurnDelete(go);
+
+            Selected = 100;
+        }
+    }
+
+    public bool IsGameOver()
+    {
+        if (enemyList.Count > 0 && playerList.Count > 0) return false;
+        else return true;
     }
 }

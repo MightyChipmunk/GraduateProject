@@ -54,6 +54,7 @@ MonoBehaviour:
   strength: 10
   defense: 3
   speed: 5
+  modelName: 
 --- !u!1 &4941697976007401157
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,6 +316,11 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 0468a42c5793ba94fb5e56b01c7ae331, type: 2}
+    - target: {fileID: 1116371902028168016, guid: 4a46e821c58b5cd42b14eaab6d197266,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1696834749189059949, guid: 4a46e821c58b5cd42b14eaab6d197266,
         type: 3}
       propertyPath: m_Name

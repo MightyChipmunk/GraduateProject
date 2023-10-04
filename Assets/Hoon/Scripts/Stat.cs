@@ -23,6 +23,11 @@ public class Stat : MonoBehaviour
             {
                 hpBar.value = hp;
             }
+
+            if (hp <= 0)
+            {
+                BattleManager.Instance.CharDestroy(gameObject);
+            }
         }
     }
 
@@ -56,6 +61,10 @@ public class Stat : MonoBehaviour
     int speed = 5;
     public int Speed { get { return speed; } set { speed = value; } }
 
+    [SerializeField]
+    string modelName;
+    public string ModelName { get { return modelName; } set { modelName = value; } }
+
     public int[] Near()
     {
         int[] near = new int[2];
@@ -70,6 +79,15 @@ public class Stat : MonoBehaviour
         anim.SetTrigger("Attack");
         BattleManager.Instance.isAction = true;
         animEvent.enemyStat = enemyStat;
+
+        if (!BattleManager.Instance.myTurn())
+        {
+            Vector3 camDir = Quaternion.LookRotation(transform.position - enemyStat.transform.position).eulerAngles;
+            iTween.RotateTo(Camera.main.transform.parent.gameObject, iTween.Hash("y", camDir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+            iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", enemyStat.transform.position.x, "y", enemyStat.transform.position.y, "z", enemyStat.transform.position.z, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+        }
+        Vector3 attackDir = Quaternion.LookRotation(enemyStat.transform.position - transform.position).eulerAngles;
+        iTween.RotateTo(gameObject, iTween.Hash("y", attackDir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
     }
 
     private void Start()

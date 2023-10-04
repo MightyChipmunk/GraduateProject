@@ -87,6 +87,7 @@ public class TeamMember
         stat.Strength = strength;
         stat.Defense = defence;
         stat.Speed = speed;
+        stat.ModelName = modelName;
 
         return go;
     }
@@ -105,6 +106,7 @@ public class TeamMember
         stat.Strength= strength;
         stat.Defense = defence;
         stat.Speed = speed;
+        stat.ModelName = modelName;
 
         return go;
     }
