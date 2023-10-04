@@ -10,7 +10,6 @@
 /UMotionData/AutoBackups*
 .idea*
 .vsconfig
-.vsidx
 .DS_Store
 Packages/packages-lock.json
 
@@ -34,3 +33,5 @@ ExportedObj/
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
+*.vsidx
+*.vsidx
