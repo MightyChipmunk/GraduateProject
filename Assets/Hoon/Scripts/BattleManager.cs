@@ -9,6 +9,7 @@ public class BattleManager : MonoBehaviour
     public GameObject downArrow;
     public GameObject charInfo;
     public GameObject enemyInfo;
+    public GameObject turnInfo;
     public Transform content;
     public Transform canvas;
     public Button attack;
@@ -85,12 +86,9 @@ public class BattleManager : MonoBehaviour
         }
 
         //юс╫ц
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (!myTurn() && !isAction)
         {
-            if (!myTurn() && !isAction)
-            {
-                turn.Peek().GetComponent<Stat>().Attack(playerList[0].GetComponent<Stat>());
-            }
+            turn.Peek().GetComponent<Stat>().Attack(playerList[0].GetComponent<Stat>());
         }
 
         downArrow.SetActive(myTurn());
@@ -102,6 +100,7 @@ public class BattleManager : MonoBehaviour
         {
             GameObject newMem = mem.Instantiate();
             newMem.transform.position = new Vector3(-3 * mem.GetIndex, 0, 6);
+            newMem.transform.rotation = Quaternion.LookRotation(Vector3.back);
             enemyList.Add(newMem);
         }
         foreach (TeamMember mem in playerTeam.Members)
@@ -113,7 +112,7 @@ public class BattleManager : MonoBehaviour
         }
 
         Selected = 0;
-        TurnEnque();
+        InitTurn();
         MoveCam();
     }
 
@@ -126,7 +125,7 @@ public class BattleManager : MonoBehaviour
 
     public void EndTurn()
     {
-        turn.Enqueue(turn.Dequeue());
+        TurnEnqueue(TurnDequeue());
 
         if (!myTurn())
         {
@@ -148,12 +147,12 @@ public class BattleManager : MonoBehaviour
         else
         {
             Transform tr = turn.Peek().transform;
-            iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", tr.position.x, "y", tr.position.y, "z", tr.position.z - 2, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+            iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", tr.position.x, "y", tr.position.y, "z", tr.position.z - 5.5, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
             EnemyInfoSet(tr.GetComponent<Stat>());
         }
     }
 
-    void TurnEnque()
+    void InitTurn()
     {
         List<GameObject> allList = new List<GameObject> ();
         foreach (GameObject go in playerList)
@@ -179,7 +178,7 @@ public class BattleManager : MonoBehaviour
                     idx = j;
                 }
             }
-            turn.Enqueue(allList[idx]);
+            TurnEnqueue(allList[idx]);
             allList.RemoveAt(idx);
         }
     }
@@ -187,5 +186,33 @@ public class BattleManager : MonoBehaviour
     bool myTurn()
     {
         return playerList.Contains(turn.Peek());
+    }
+
+    List<GameObject> turnInfoList = new List<GameObject>();
+    void TurnEnqueue(GameObject go)
+    {
+        turn.Enqueue(go);
+
+        GameObject info = Instantiate(turnInfo, canvas);
+        info.transform.Find("IconMask").transform.Find("Image").GetComponent<Image>().sprite = Resources.Load<Sprite>(go.GetComponent<Stat>().Name + "Icon");
+        info.transform.Find("Name").GetComponent<TMP_Text>().text = go.GetComponent<Stat>().Name;
+        info.transform.position = new Vector3(150, 930 - 100 * turnInfoList.Count, 0);
+        info.transform.localScale = Vector3.zero;
+        iTween.ScaleTo(info, iTween.Hash("x", 1, "y", 1, "z", 1, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
+        turnInfoList.Add(info);
+    }
+
+    GameObject TurnDequeue()
+    {
+        GameObject first = turnInfoList[0];
+        turnInfoList.RemoveAt(0);
+        Destroy(first);
+
+        foreach (GameObject go in turnInfoList)
+        {
+            iTween.MoveTo(go, iTween.Hash("y", go.transform.position.y + 100, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
+        }
+
+        return turn.Dequeue();
     }
 }

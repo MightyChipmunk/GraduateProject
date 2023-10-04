@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3360818274001011650}
   - component: {fileID: 2277377706354982931}
   m_Layer: 7
-  m_Name: Player_Battle
+  m_Name: UnityChan
   m_TagString: BattlePlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
