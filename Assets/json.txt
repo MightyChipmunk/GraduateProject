@@ -1,0 +1,9 @@
+{
+    "hp": 150,
+    "name": "p1",
+    "index": 0,
+    "modelName": "UnityChan",
+    "strength": 200,
+    "defence": 0,
+    "speed": 30
+}

@@ -6,6 +6,11 @@ using UnityEngine.UI;
 
 public class Stat : MonoBehaviour
 {
+    [SerializeField]
+    GameObject dieEffect;
+    [SerializeField]
+    GameObject hitEffect;
+
     public Slider hpBar;
     public TMP_Text chName;
     Animator anim;
@@ -26,7 +31,7 @@ public class Stat : MonoBehaviour
 
             if (hp <= 0)
             {
-                BattleManager.Instance.CharDestroy(gameObject);
+                Died();
             }
         }
     }
@@ -88,6 +93,28 @@ public class Stat : MonoBehaviour
         }
         Vector3 attackDir = Quaternion.LookRotation(enemyStat.transform.position - transform.position).eulerAngles;
         iTween.RotateTo(gameObject, iTween.Hash("y", attackDir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+    }
+
+    public void GetHit(int damage)
+    {
+        anim.SetTrigger("GetHit");
+        
+        GameObject effect = Instantiate(hitEffect);
+        effect.transform.position = transform.position + GetComponent<CharacterController>().center;
+
+        GameObject damageUI = Instantiate(Resources.Load<GameObject>("DamageUI"));
+        damageUI.transform.position = transform.position;
+        damageUI.GetComponent<DamageUI>().Init(damage, GetComponent<CharacterController>().height);
+
+        BattleManager.Instance.ShakeCam();
+    }
+
+    void Died()
+    {
+        GameObject go = Instantiate(dieEffect);
+        go.transform.position = transform.position + GetComponent<CharacterController>().center;
+        BattleManager.Instance.ShakeCam(0.05f);
+        BattleManager.Instance.CharDestroy(gameObject);
     }
 
     private void Start()

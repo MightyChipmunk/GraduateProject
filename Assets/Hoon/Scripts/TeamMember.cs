@@ -5,8 +5,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Serializable]
 public class Team
 {
+    [SerializeField]
     List<TeamMember> members = new List<TeamMember>();
     public List<TeamMember> Members
     {

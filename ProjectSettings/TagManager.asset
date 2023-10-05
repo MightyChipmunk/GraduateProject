@@ -7,6 +7,8 @@ TagManager:
   - Collide
   - BattlePlayer
   - BattleCamera
+  - FxTemporaire
+  - UICamera
   layers:
   - Default
   - TransparentFX

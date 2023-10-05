@@ -124,6 +124,8 @@ public class BattleManager : MonoBehaviour
 
     public void EnemyInfoSet(Stat stat)
     {
+        if (!enemyList.Contains(stat.gameObject)) return;
+
         enemyInfo.GetComponentInChildren<Slider>().maxValue = stat.hpBar.maxValue;
         enemyInfo.GetComponentInChildren<Slider>().value = stat.hpBar.value;
         enemyInfo.GetComponentInChildren<TMP_Text>().text = stat.Name;
@@ -162,6 +164,32 @@ public class BattleManager : MonoBehaviour
             iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", tr.position.x, "y", tr.position.y, "z", tr.position.z - 5.5, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
             EnemyInfoSet(tr.GetComponent<Stat>());
         }
+    }
+
+    public void ShakeCam(float shakeRange = 0.03f)
+    {
+        StartCoroutine(ShakeCamCo(shakeRange));
+    }
+
+    IEnumerator ShakeCamCo(float shakeRange)
+    {
+        float currentTime = 0;
+        float shakeTime = 0.3f;
+        float shakePer = 0;
+        Vector3 OrigPos = Camera.main.transform.localPosition;
+        while (currentTime <= shakeTime)
+        {
+            shakePer += Time.deltaTime;
+            if (shakePer >= 0.1f)
+            {
+                shakeRange *= -1;
+            }
+
+            yield return null;
+            currentTime += Time.deltaTime;
+            Camera.main.transform.localPosition = Vector3.Lerp(Camera.main.transform.localPosition, OrigPos + new Vector3(1, 1, 0).normalized * shakeRange, 1);
+        }
+        Camera.main.transform.localPosition = OrigPos;
     }
 
     void InitTurn()
