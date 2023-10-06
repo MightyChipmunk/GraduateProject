@@ -60,8 +60,7 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(StartBattle(Server_Test.Instance.playerTeam, Server_Test.Instance.enemyTeam));
-
+        StartCoroutine(StartBattle(Server_Test.Instance.playerTeam, Server_Test.Instance.enemyTeam, Server_Test.Instance.reward));
 
         attack.onClick.AddListener(() =>
         {
@@ -95,7 +94,7 @@ public class BattleManager : MonoBehaviour
         downArrow.SetActive(myTurn() && !IsGameOver());
     }
 
-    IEnumerator StartBattle(Team playerTeam, Team enemyTeam)
+    IEnumerator StartBattle(Team playerTeam, Team enemyTeam, Reward reward)
     {
         isAction = true;
 
@@ -118,6 +117,8 @@ public class BattleManager : MonoBehaviour
         InitTurn();
         MoveCam();
 
+        BattleUIManager.Instance.StartUI();
+        BattleUIManager.Instance.reward = reward;
         yield return new WaitForSeconds(3f);
         isAction = false;
     }
@@ -308,6 +309,13 @@ public class BattleManager : MonoBehaviour
     public bool IsGameOver()
     {
         if (enemyList.Count > 0 && playerList.Count > 0) return false;
-        else return true;
+        else
+        {
+            if (enemyList.Count <= 0)
+                BattleUIManager.Instance.EndUI(true);
+            else 
+                BattleUIManager.Instance.EndUI(false);
+            return true;
+        }
     }
 }

@@ -13,6 +13,7 @@ public class Server_Test : MonoBehaviour
 
     public Team playerTeam;
     public Team enemyTeam;
+    public Reward reward;
 
     // Start is called before the first frame update
     void Awake()
@@ -28,6 +29,8 @@ public class Server_Test : MonoBehaviour
 
         playerTeam = new Team(playerMembers);
         enemyTeam = new Team(enemyMembers);
+        reward.gold = 100;
+        reward.exp = 10;
     }
 
     public void OnClick()

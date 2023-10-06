@@ -563,14 +563,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMembers:
-  - hp: 150
+  - hp: 100
     name: p1
     index: 0
     modelName: UnityChan
     strength: 200
     defence: 0
     speed: 30
-  - hp: 200
+  - hp: 100
     name: p2
     index: 0
     modelName: UnityChan
@@ -603,6 +603,9 @@ MonoBehaviour:
     members: []
   enemyTeam:
     members: []
+  reward:
+    gold: 0
+    exp: 0
 --- !u!4 &1371906060
 Transform:
   m_ObjectHideFlags: 0

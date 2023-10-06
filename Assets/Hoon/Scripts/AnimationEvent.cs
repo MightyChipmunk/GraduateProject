@@ -14,6 +14,11 @@ public class AnimationEvent : MonoBehaviour
         originDir = transform.eulerAngles;
     }
 
+    protected virtual void ActionName(string act)
+    {
+        BattleUIManager.Instance.ActionName(act);
+    }
+
     protected virtual void Attack()
     {
         BattleManager.Instance.EnemyInfoSet(enemyStat);
@@ -28,6 +33,7 @@ public class AnimationEvent : MonoBehaviour
 
     protected virtual void EndMotion()
     {
+        BattleUIManager.Instance.ActionEnd();
         BattleManager.Instance.EndTurn();
         BattleManager.Instance.MoveCam();
         BattleManager.Instance.isAction = false;

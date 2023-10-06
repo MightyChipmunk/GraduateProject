@@ -8,8 +8,7 @@ using UnityEngine.UI;
 [Serializable]
 public class Team
 {
-    [SerializeField]
-    List<TeamMember> members = new List<TeamMember>();
+    public List<TeamMember> members = new List<TeamMember>();
     public List<TeamMember> Members
     {
         get { return members; }

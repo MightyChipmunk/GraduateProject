@@ -463,6 +463,14 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: 0
+        functionName: ActionName
+        data: "\uACF5\uACA9!"
+        objectReferenceParameter: {fileID: 11500000, guid: 304a85ce14fff0a42b8adfd59a516902,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
