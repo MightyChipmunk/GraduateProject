@@ -8,11 +8,15 @@ public class Server_Test : MonoBehaviour
 {
     public static Server_Test Instance;
 
-    public List<TeamMember> playerMembers;
-    public List<TeamMember> enemyMembers;
+    [SerializeField]
+    List<TeamMember> playerMembers;
+    List<TeamMember> enemyMembers;
 
+    [HideInInspector]
     public Team playerTeam;
+    [HideInInspector]
     public Team enemyTeam;
+    [HideInInspector]
     public Reward reward;
 
     // Start is called before the first frame update
@@ -28,9 +32,6 @@ public class Server_Test : MonoBehaviour
         DontDestroyOnLoad(Instance);
 
         playerTeam = new Team(playerMembers);
-        enemyTeam = new Team(enemyMembers);
-        reward.gold = 100;
-        reward.exp = 10;
     }
 
     public void OnClick()

@@ -16,6 +16,8 @@ public class BattleManager : MonoBehaviour
     public bool isAction = false;
     public static BattleManager Instance;
 
+    List<Command> commands = new List<Command>();
+
     int selected = 0;
     public int Selected
     {
@@ -67,6 +69,7 @@ public class BattleManager : MonoBehaviour
             if (myTurn() && !isAction && !IsGameOver())
             {
                 turn[0].GetComponent<Stat>().Attack(enemyList[selected].GetComponent<Stat>());
+                commands.Add(new Command(0, turn[0].GetComponent<Stat>().GetIndex, enemyList[selected].GetComponent<Stat>().GetIndex, 0));
             }
         });
     }
@@ -89,6 +92,7 @@ public class BattleManager : MonoBehaviour
         if (!myTurn() && !isAction && !IsGameOver())
         {
             turn[0].GetComponent<Stat>().Attack(playerList[0].GetComponent<Stat>());
+            commands.Add(new Command(0, turn[0].GetComponent<Stat>().GetIndex, playerList[selected].GetComponent<Stat>().GetIndex, 1));
         }
 
         downArrow.SetActive(myTurn() && !IsGameOver());
@@ -316,6 +320,34 @@ public class BattleManager : MonoBehaviour
             else 
                 BattleUIManager.Instance.EndUI(false);
             return true;
+        }
+    }
+
+    void GetCommand(Command command)
+    {
+        Stat attacker;
+        Stat deffender;
+
+        if (command.team == 0)
+        {
+            attacker = playerList[command.attackerIdx].GetComponent<Stat>();
+            deffender = enemyList[command.deffenderIdx].GetComponent<Stat>();
+        }
+        else
+        {
+            attacker = enemyList[command.attackerIdx].GetComponent<Stat>();
+            deffender = playerList[command.deffenderIdx].GetComponent<Stat>();
+        }
+
+
+        switch (command.actionCategory)
+        {
+            case (0):
+                attacker.Attack(deffender);
+                break;
+            case (1):
+                attacker.Skill(deffender);
+                break;
         }
     }
 }

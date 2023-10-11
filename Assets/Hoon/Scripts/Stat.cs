@@ -95,6 +95,22 @@ public class Stat : MonoBehaviour
         iTween.RotateTo(gameObject, iTween.Hash("y", attackDir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
     }
 
+    public void Skill(Stat enemyStat)
+    {
+        anim.SetTrigger("Skill");
+        BattleManager.Instance.isAction = true;
+        animEvent.enemyStat = enemyStat;
+
+        if (!BattleManager.Instance.myTurn())
+        {
+            Vector3 camDir = Quaternion.LookRotation(transform.position - enemyStat.transform.position).eulerAngles;
+            iTween.RotateTo(Camera.main.transform.parent.gameObject, iTween.Hash("y", camDir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+            iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", enemyStat.transform.position.x, "y", enemyStat.transform.position.y, "z", enemyStat.transform.position.z, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+        }
+        Vector3 attackDir = Quaternion.LookRotation(enemyStat.transform.position - transform.position).eulerAngles;
+        iTween.RotateTo(gameObject, iTween.Hash("y", attackDir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+    }
+
     public void GetHit(int damage)
     {
         anim.SetTrigger("GetHit");

@@ -43,8 +43,6 @@ public class Team
 [Serializable]
 public class TeamMember
 {
-    Team team;
-
     [SerializeField]
     int hp = 0;
 
