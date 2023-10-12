@@ -34,9 +34,9 @@ public class AnimationEvent : MonoBehaviour
     protected virtual void EndMotion()
     {
         BattleUIManager.Instance.ActionEnd();
+        //BattleManager.Instance.isAction = false;
         BattleManager.Instance.EndTurn();
         BattleManager.Instance.MoveCam();
-        BattleManager.Instance.isAction = false;
         iTween.RotateTo(playerStat.gameObject, iTween.Hash("y", originDir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
     }
 }

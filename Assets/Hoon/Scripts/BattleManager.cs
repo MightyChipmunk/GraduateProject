@@ -13,6 +13,7 @@ public class BattleManager : MonoBehaviour
     public Transform content;
     public Transform canvas;
     public Button attack;
+    public Button skill;
     public bool isAction = false;
     public static BattleManager Instance;
 
@@ -68,8 +69,29 @@ public class BattleManager : MonoBehaviour
         {
             if (myTurn() && !isAction && !IsGameOver())
             {
-                turn[0].GetComponent<Stat>().Attack(enemyList[selected].GetComponent<Stat>());
-                commands.Add(new Command(0, turn[0].GetComponent<Stat>().GetIndex, enemyList[selected].GetComponent<Stat>().GetIndex, 0));
+                Command command = new Command(0, playerList.IndexOf(turn[0]), selected, 0);
+                ExcuteCommand(command);
+                commands.Add(command);
+            }
+            if (isAction)
+            {
+                isAction = false;
+                MoveCam(false);
+            }
+        });
+
+        skill.onClick.AddListener(() =>
+        {
+            if (myTurn() && !isAction && !IsGameOver())
+            {
+                Command command = new Command(1, playerList.IndexOf(turn[0]), selected, 0);
+                ExcuteCommand(command);
+                commands.Add(command);
+            }
+            if (isAction)
+            {
+                isAction = false;
+                MoveCam(false);
             }
         });
     }
@@ -91,11 +113,12 @@ public class BattleManager : MonoBehaviour
         //юс╫ц
         if (!myTurn() && !isAction && !IsGameOver())
         {
-            turn[0].GetComponent<Stat>().Attack(playerList[0].GetComponent<Stat>());
-            commands.Add(new Command(0, turn[0].GetComponent<Stat>().GetIndex, playerList[selected].GetComponent<Stat>().GetIndex, 1));
+            Command command = new Command(0, enemyList.IndexOf(turn[0]), 0, 1);
+            ExcuteCommand(command);
+            commands.Add(command);
         }
 
-        downArrow.SetActive(myTurn() && !IsGameOver());
+        downArrow.SetActive(myTurn() && !IsGameOver() && !isAction);
     }
 
     IEnumerator StartBattle(Team playerTeam, Team enemyTeam, Reward reward)
@@ -124,7 +147,8 @@ public class BattleManager : MonoBehaviour
         BattleUIManager.Instance.StartUI();
         BattleUIManager.Instance.reward = reward;
         yield return new WaitForSeconds(3f);
-        isAction = false;
+        
+        if (!myTurn()) isAction = false;
     }
 
     public void EnemyInfoSet(Stat stat)
@@ -145,6 +169,7 @@ public class BattleManager : MonoBehaviour
         if (!myTurn())
         {
             EnemyInfoSet(turn[0].GetComponent<Stat>());
+            isAction = false;
         }
         else
         {
@@ -152,14 +177,21 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    public void MoveCam()
+    public void MoveCam(bool turnEnd = true)
     {
         if (IsGameOver()) return;
 
-        if (myTurn())
+        if (myTurn() && !turnEnd)
         {
             Transform tr = turn[0].transform;
             Vector3 dir = Quaternion.LookRotation(enemyList[selected].transform.position - tr.position).eulerAngles;
+            iTween.RotateTo(Camera.main.transform.parent.gameObject, iTween.Hash("y", dir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+            iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", tr.position.x, "y", tr.position.y, "z", tr.position.z, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+        }
+        else if (myTurn() && turnEnd)
+        {
+            Transform tr = turn[0].transform;
+            Vector3 dir = Quaternion.identity.eulerAngles;
             iTween.RotateTo(Camera.main.transform.parent.gameObject, iTween.Hash("y", dir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
             iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", tr.position.x, "y", tr.position.y, "z", tr.position.z, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
         }
@@ -323,7 +355,7 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    void GetCommand(Command command)
+    void ExcuteCommand(Command command)
     {
         Stat attacker;
         Stat deffender;
