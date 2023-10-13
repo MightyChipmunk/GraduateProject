@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Server_Test : MonoBehaviour
 {
     public static Server_Test Instance;
+    ClientInterface tcpInterface = new ClientInterface();
 
     [SerializeField]
     List<TeamMember> playerMembers;
@@ -32,10 +34,16 @@ public class Server_Test : MonoBehaviour
         DontDestroyOnLoad(Instance);
 
         playerTeam = new Team(playerMembers);
+        tcpInterface.Start();
     }
 
-    public void OnClick()
+    private void Update()
     {
-        SceneManager.LoadScene(1);
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            string test = "Test";
+            byte[] StrByte = Encoding.UTF8.GetBytes(test);
+            tcpInterface.SendMessage(StrByte);
+        }
     }
 }
