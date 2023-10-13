@@ -63,14 +63,18 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(StartBattle(Server_Test.Instance.playerTeam, Server_Test.Instance.enemyTeam, Server_Test.Instance.reward));
+        StartCoroutine(StartBattle(NetworkManager.Instance.playerTeam, NetworkManager.Instance.enemyTeam, NetworkManager.Instance.reward));
 
         attack.onClick.AddListener(() =>
         {
             if (myTurn() && !isAction && !IsGameOver())
             {
                 Command command = new Command(0, playerList.IndexOf(turn[0]), selected, 0);
-                ExcuteCommand(command);
+                string data = JsonUtility.ToJson(command);
+                if (NetworkManager.Instance.IsConnected())
+                    NetworkManager.Instance.Send(data);
+                else
+                    ExcuteCommand(command);
                 commands.Add(command);
             }
             if (isAction)
@@ -79,13 +83,16 @@ public class BattleManager : MonoBehaviour
                 MoveCam(false);
             }
         });
-
         skill.onClick.AddListener(() =>
         {
             if (myTurn() && !isAction && !IsGameOver())
             {
                 Command command = new Command(1, playerList.IndexOf(turn[0]), selected, 0);
-                ExcuteCommand(command);
+                string data = JsonUtility.ToJson(command);
+                if (NetworkManager.Instance.IsConnected())
+                    NetworkManager.Instance.Send(data);
+                else
+                    ExcuteCommand(command);
                 commands.Add(command);
             }
             if (isAction)
@@ -110,8 +117,8 @@ public class BattleManager : MonoBehaviour
             }
         }
 
-        //임시
-        if (!myTurn() && !isAction && !IsGameOver())
+        // 임시
+        if (!myTurn() && !isAction && !IsGameOver() && !NetworkManager.Instance.IsConnected())
         {
             Command command = new Command(0, enemyList.IndexOf(turn[0]), 0, 1);
             ExcuteCommand(command);
@@ -355,7 +362,7 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    void ExcuteCommand(Command command)
+    public void ExcuteCommand(Command command)
     {
         Stat attacker;
         Stat deffender;
@@ -381,5 +388,11 @@ public class BattleManager : MonoBehaviour
                 attacker.Skill(deffender);
                 break;
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (NetworkManager.Instance.IsConnected())
+            NetworkManager.Instance.CloseNet();
     }
 }

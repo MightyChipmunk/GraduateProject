@@ -19,8 +19,8 @@ public class Interaction_Battle : Interaction
 
     protected override void Interact()
     {
-        Server_Test.Instance.enemyTeam = this.enemyTeam;
-        Server_Test.Instance.reward = this.reward;
+        NetworkManager.Instance.enemyTeam = this.enemyTeam;
+        NetworkManager.Instance.reward = this.reward;
         SceneManager.LoadScene("BattleScene");
     }
 }

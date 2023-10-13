@@ -10,7 +10,10 @@ using UnityEngine;
 
 public class ClientInterface
 {
-    private TcpClient socketConnection;
+    TcpClient socketConnection;
+    NetworkStream stream;
+
+    public bool isReady;
 
     public void Start()
     {
@@ -22,7 +25,10 @@ public class ClientInterface
         try
         {
             socketConnection = new TcpClient("192.168.0.30", 7777);
-            Debug.Log("서버 연결 완료"); 
+            Debug.Log("서버 연결 완료");
+            isReady = true;
+
+            stream = socketConnection.GetStream();
         }
         catch (Exception e)
         {
@@ -33,38 +39,66 @@ public class ClientInterface
     /// Send message to server using socket connection.     
     public void SendMessage(Byte[] buffer)
     {
-        if (socketConnection == null)
+        if (socketConnection == null && stream == null)
         {
             Debug.Log("소켓 연결 없음");
             return;
         }
         try
         {
-            Debug.Log("스트림 가져오기");
-            // Get a stream object for writing.             
-            NetworkStream stream = socketConnection.GetStream();
-            StreamWriter writer = new StreamWriter(stream);
             if (stream.CanWrite)
             {
-                Debug.Log("스트림 작성 시도");
                 // Write byte array to socketConnection stream.                 
                 stream.Write(buffer, 0, buffer.Length);// Receive the TcpServer.response.
-
-                // Buffer to store the response bytes.
-                Byte[] data = new Byte[256];
-
-                // String to store the response ASCII representation.
-                String responseData = String.Empty;
-
-                // Read the first batch of the TcpServer response bytes.
-                Int32 bytes = stream.Read(data, 0, data.Length);
-                responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
-                Debug.Log("Received: " + responseData);
             }
         }
         catch (SocketException socketException)
         {
             Debug.Log("Socket exception: " + socketException);
         }
+    }
+
+    public string RecvMessage()
+    {
+        if (socketConnection == null || stream == null)
+        {
+            return null;
+        }
+        try
+        {
+            if (stream.CanRead && stream.DataAvailable)
+            {
+                // Buffer to store the response bytes.
+                byte[] data = new byte[256];
+
+                // String to store the response ASCII representation.
+                string responseData = string.Empty;
+
+                // Read the first batch of the TcpServer response bytes.
+                int bytes = stream.Read(data, 0, data.Length);
+                responseData = Encoding.ASCII.GetString(data, 0, bytes);
+
+                if (responseData.Length > 0)
+                {
+                    Debug.Log("Received: " + responseData);
+                    return responseData;
+                }
+                else
+                    return null;
+            }
+            else
+                return null;
+        }
+        catch (SocketException socketException)
+        {
+            Debug.Log("Socket exception: " + socketException);
+            return null;
+        }
+    }
+
+    public void CloseAll()
+    {
+        socketConnection.Close();
+        stream.Close();
     }
 }
