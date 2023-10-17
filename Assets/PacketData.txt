@@ -1,0 +1,31 @@
+{
+    "Name": "Command",
+    "team": {
+        "members": [
+            {
+                "hp": 100,
+                "name": "Player1",
+                "index": 0,
+                "modelName": "UnityChan",
+                "strength": 20,
+                "defence": 0,
+                "speed": 100
+            },
+            {
+                "hp": 200,
+                "name": "Player2",
+                "index": 1,
+                "modelName": "UnityChan",
+                "strength": 10,
+                "defence": 3,
+                "speed": 30
+            }
+        ]
+    },
+    "command": {
+        "actionCategory": 1,
+        "attackerIdx": 1,
+        "deffenderIdx": 0,
+        "team": 1
+    }
+}

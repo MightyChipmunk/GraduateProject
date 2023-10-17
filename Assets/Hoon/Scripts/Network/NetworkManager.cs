@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -42,19 +43,19 @@ public class NetworkManager : MonoBehaviour
         if (data != null)
         {
             // 만약 서버로부터 Command 정보를 받는다면
-            try
+            if (data[2] == 'a')
             {
                 // 역직렬화 후 커맨드 실행
                 Command command = JsonUtility.FromJson<Command>(data);
                 BattleManager.Instance.ExcuteCommand(command);
             }
-            // 만약 서버로부터 팀 정보를 받는다면 
-            catch (ArgumentException e)
+            // 만약 서버로부터 팀 정보를 받는다면
+            else if (data[2] == 'm')
             {
                 // 역직렬화 후 상대팀의 정보 저장
                 enemyTeam = JsonUtility.FromJson<Team>(data);
                 // PVP 시작 (서버에 연결되어 있으니 자신은 PVP 준비 한 상태)
-                PVPStart();
+                //PVPStart();
             }
         }
     }
@@ -69,10 +70,12 @@ public class NetworkManager : MonoBehaviour
         return tcpInterface.isReady ? true : false;
     }
 
-    public void Send(string data)
+    public void Send(string data, int id)
     {
-        byte[] StrByte = Encoding.UTF8.GetBytes(data);
-        tcpInterface.SendMessage(StrByte);
+        ArraySegment<byte> segment = Write(data, id);
+        byte[] packet = segment.ToArray();
+
+        tcpInterface.SendMessage(packet);
     }
 
     // PVP가 준비됐다면 서버에 연결 후 자신의 팀 정보를 직렬화 하고 서버에 보냄
@@ -80,8 +83,32 @@ public class NetworkManager : MonoBehaviour
     {
         TCPStart();
         string data = JsonUtility.ToJson(playerTeam);
-        byte[] StrByte = Encoding.UTF8.GetBytes(data);
-        tcpInterface.SendMessage(StrByte);
+
+        Send(data, 1);
+    }
+
+    public ArraySegment<byte> Write(string data, int id)
+    {
+        byte[] tmp = new byte[4096];
+        ushort size = (ushort)Encoding.Unicode.GetBytes(data, 0, data.Length, tmp, 0);
+        byte[] bytes = new byte[size + 6];
+        ArraySegment<byte> segment = new ArraySegment<byte>(bytes);
+        ushort count = 0;
+        bool success = true;
+
+        Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count);
+
+        count += sizeof(ushort);
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), (ushort)id);
+        count += sizeof(ushort);
+        ushort contentLen = (ushort)Encoding.Unicode.GetBytes(data, 0, data.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+        success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), contentLen);
+        count += sizeof(ushort);
+        count += contentLen;
+        success &= BitConverter.TryWriteBytes(s, count);
+        if (success == false)
+            return null;
+        return segment;
     }
 
     public void PVPStart()

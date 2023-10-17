@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -72,7 +73,7 @@ public class BattleManager : MonoBehaviour
                 Command command = new Command(0, playerList.IndexOf(turn[0]), selected, 0);
                 string data = JsonUtility.ToJson(command);
                 if (NetworkManager.Instance.IsConnected())
-                    NetworkManager.Instance.Send(data);
+                    NetworkManager.Instance.Send(data, 0);
                 else
                     ExcuteCommand(command);
                 commands.Add(command);
@@ -90,7 +91,7 @@ public class BattleManager : MonoBehaviour
                 Command command = new Command(1, playerList.IndexOf(turn[0]), selected, 0);
                 string data = JsonUtility.ToJson(command);
                 if (NetworkManager.Instance.IsConnected())
-                    NetworkManager.Instance.Send(data);
+                    NetworkManager.Instance.Send(data, 0);
                 else
                     ExcuteCommand(command);
                 commands.Add(command);

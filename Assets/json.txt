@@ -1,9 +1,1 @@
-{
-    "hp": 150,
-    "name": "p1",
-    "index": 0,
-    "modelName": "UnityChan",
-    "strength": 200,
-    "defence": 0,
-    "speed": 30
-}
+{"members":[{"hp":100,"name":"Player1","index":0,"modelName":"UnityChan","strength":20,"defence":0,"speed":100},{"hp":200,"name":"Player2","index":1,"modelName":"UnityChan","strength":10,"defence":3,"speed":30}]}

@@ -22,9 +22,11 @@ public class ClientInterface
 
     private void ConnectToTcpServer()
     {
+        if (socketConnection != null) return;
+
         try
         {
-            socketConnection = new TcpClient("192.168.0.30", 7777);
+            socketConnection = new TcpClient("15.164.245.14", 7777);
             Debug.Log("서버 연결 완료");
             isReady = true;
 
@@ -37,7 +39,7 @@ public class ClientInterface
     }
 
     /// Send message to server using socket connection.     
-    public void SendMessage(Byte[] buffer)
+    public void SendMessage(byte[] buffer)
     {
         if (socketConnection == null && stream == null)
         {
@@ -50,6 +52,7 @@ public class ClientInterface
             {
                 // Write byte array to socketConnection stream.                 
                 stream.Write(buffer, 0, buffer.Length);// Receive the TcpServer.response.
+                Debug.Log("데이터 전송 완료");
             }
         }
         catch (SocketException socketException)
@@ -69,14 +72,16 @@ public class ClientInterface
             if (stream.CanRead && stream.DataAvailable)
             {
                 // Buffer to store the response bytes.
-                byte[] data = new byte[256];
+                byte[] data = new byte[4096];
 
                 // String to store the response ASCII representation.
                 string responseData = string.Empty;
 
                 // Read the first batch of the TcpServer response bytes.
                 int bytes = stream.Read(data, 0, data.Length);
-                responseData = Encoding.ASCII.GetString(data, 0, bytes);
+                byte[] strByte = new byte[4096];
+                Array.Copy(data, 6, strByte, 0, bytes);
+                responseData = Encoding.Unicode.GetString(strByte, 0, bytes - 6);
 
                 if (responseData.Length > 0)
                 {
