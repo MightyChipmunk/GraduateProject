@@ -463,20 +463,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMembers:
-  - hp: 100
+  - userId: 
+    hp: 100
     name: Player1
     index: 0
     modelName: UnityChan
     strength: 20
     defence: 0
     speed: 100
-  - hp: 200
+    skillLv: 0
+    equipLv: 0
+  - userId: 
+    hp: 100
     name: Player2
     index: 0
-    modelName: UnityChan
-    strength: 10
-    defence: 3
-    speed: 30
+    modelName: UnityChanKAGURA
+    strength: 20
+    defence: 0
+    speed: 90
+    skillLv: 0
+    equipLv: 0
+  - userId: 
+    hp: 100
+    name: Player1
+    index: 0
+    modelName: UnityChanKohaku
+    strength: 20
+    defence: 0
+    speed: 80
+    skillLv: 0
+    equipLv: 0
   playerTeam:
     userId: 
     members: []
@@ -487,6 +503,7 @@ MonoBehaviour:
     gold: 0
     exp: 0
   userId: Player2
+  cnt: 0
 --- !u!4 &1371906060
 Transform:
   m_ObjectHideFlags: 0

@@ -46,6 +46,8 @@ public class Team
 [Serializable]
 public class TeamMember
 {
+    public string userId = "";
+
     [SerializeField]
     int hp = 0;
 
@@ -68,6 +70,12 @@ public class TeamMember
 
     [SerializeField]
     int speed;
+
+    [SerializeField]
+    int skillLv;
+
+    [SerializeField]
+    int equipLv;
 
     public TeamMember(int hp, string name, string modelName)
     {

@@ -16,6 +16,8 @@ public class BattleManager : MonoBehaviour
     public Button attack;
     public Button skill;
     public bool isAction = false;
+    public bool atkBtnSelected = false;
+    public bool skillBtnSelected = false;
     public static BattleManager Instance;
 
     List<Command> commands = new List<Command>();
@@ -37,14 +39,7 @@ public class BattleManager : MonoBehaviour
                     value = 0;
                 }
 
-                for (int i = 0; i < turnInfoList.Count; i++)
-                {
-                    GameObject tmp = turnInfoList[i];
-                    Color col;
-                    col = tmp.transform.Find("BG").GetComponent<Image>().color;
-                    col.a = 0.5f;
-                    tmp.transform.Find("BG").GetComponent<Image>().color = col;
-                }
+                TurnHilightOff();
 
                 iTween.MoveTo(downArrow, iTween.Hash("x", enemyList[value].transform.position.x, "y", 4, "z", enemyList[value].transform.position.z, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
                 Transform tr = turn[0].transform;
@@ -80,7 +75,7 @@ public class BattleManager : MonoBehaviour
 
         attack.onClick.AddListener(() =>
         {
-            if (myTurn() && !isAction && !IsGameOver())
+            if (myTurn() && !isAction && !IsGameOver() && atkBtnSelected)
             {
                 Command command = new Command(0, playerList.IndexOf(turn[0]), selected, NetworkManager.Instance.userId);
                 string data = JsonUtility.ToJson(command);
@@ -90,16 +85,17 @@ public class BattleManager : MonoBehaviour
                     ExcuteCommand(command);
                 commands.Add(command);
             }
-            if (isAction)
+            else if (!atkBtnSelected)
             {
-                isAction = false;
+                atkBtnSelected = true;
+                skillBtnSelected = false;
                 MoveCam(false);
                 TurnHilight(enemyList[selected]);
             }
         });
         skill.onClick.AddListener(() =>
         {
-            if (myTurn() && !isAction && !IsGameOver())
+            if (myTurn() && !isAction && !IsGameOver() && skillBtnSelected)
             {
                 Command command = new Command(1, playerList.IndexOf(turn[0]), selected, NetworkManager.Instance.userId);
                 string data = JsonUtility.ToJson(command);
@@ -109,9 +105,10 @@ public class BattleManager : MonoBehaviour
                     ExcuteCommand(command);
                 commands.Add(command);
             }
-            if (isAction)
+            else if (!skillBtnSelected)
             {
-                isAction = false;
+                atkBtnSelected = false;
+                skillBtnSelected = true;
                 MoveCam(false);
                 TurnHilight(enemyList[selected]);
             }
@@ -140,7 +137,7 @@ public class BattleManager : MonoBehaviour
             commands.Add(command);
         }
 
-        downArrow.SetActive(myTurn() && !IsGameOver() && !isAction);
+        downArrow.SetActive(myTurn() && !IsGameOver() && !isAction && (atkBtnSelected || skillBtnSelected));
     }
 
     IEnumerator StartBattle(Team playerTeam, Team enemyTeam, Reward reward)
@@ -170,7 +167,7 @@ public class BattleManager : MonoBehaviour
         BattleUIManager.Instance.reward = reward;
         yield return new WaitForSeconds(3f);
         
-        if (!myTurn()) isAction = false;
+        isAction = false;
     }
 
     public void EnemyInfoSet(Stat stat)
@@ -191,12 +188,16 @@ public class BattleManager : MonoBehaviour
         if (!myTurn())
         {
             EnemyInfoSet(turn[0].GetComponent<Stat>());
-            isAction = false;
         }
         else
         {
+            TurnHilightOff();
             EnemyInfoSet(enemyList[selected].GetComponent<Stat>());
         }
+
+        isAction = false;
+        atkBtnSelected = false;
+        skillBtnSelected = false;
     }
 
     public void MoveCam(bool turnEnd = true)
@@ -390,6 +391,18 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    void TurnHilightOff()
+    {
+        for (int i = 0; i < turnInfoList.Count; i++)
+        {
+            GameObject tmp = turnInfoList[i];
+            Color col;
+            col = tmp.transform.Find("BG").GetComponent<Image>().color;
+            col.a = 0.5f;
+            tmp.transform.Find("BG").GetComponent<Image>().color = col;
+        }
+    }
+
     public void CharDestroy(GameObject go)
     {
         if (playerList.Contains(go))
@@ -433,14 +446,7 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < turnInfoList.Count; i++)
-            {
-                GameObject tmp = turnInfoList[i];
-                Color col;
-                col = tmp.transform.Find("BG").GetComponent<Image>().color;
-                col.a = 0.5f;
-                tmp.transform.Find("BG").GetComponent<Image>().color = col;
-            }
+            TurnHilightOff();
 
             attacker = enemyList[command.attackerIdx].GetComponent<Stat>();
             deffender = playerList[command.deffenderIdx].GetComponent<Stat>();
