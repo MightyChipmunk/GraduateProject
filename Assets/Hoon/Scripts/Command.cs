@@ -9,13 +9,13 @@ public class Command
     public int actionCategory;
     public int attackerIdx;
     public int deffenderIdx;
-    public int team;
+    public string id;
 
-    public Command(int cat, int atk, int def, int team)
+    public Command(int cat, int atk, int def, string id = "")
     {
         actionCategory = cat;
         attackerIdx = atk;
         deffenderIdx = def;
-        this.team = team;
+        this.id = id;
     }
 }

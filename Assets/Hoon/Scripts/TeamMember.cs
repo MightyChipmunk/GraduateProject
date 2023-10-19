@@ -8,6 +8,8 @@ using UnityEngine.UI;
 [Serializable]
 public class Team
 {
+    public string userId = "";
+
     public List<TeamMember> members = new List<TeamMember>();
     public List<TeamMember> Members
     {
@@ -23,8 +25,9 @@ public class Team
         }
     }
 
-    public Team(List<TeamMember> list)
+    public Team(List<TeamMember> list, string id = "")
     {
+        userId = id;
         members = list;
         int idx = 0;
         foreach (TeamMember member in members)
@@ -78,8 +81,8 @@ public class TeamMember
     {
         GameObject go = GameObject.Instantiate(Resources.Load<GameObject>(modelName));
         Stat stat = go.GetComponent<Stat>();
-        if (stat.hpBar != null)
-            stat.hpBar.maxValue = hp;
+        stat.hpBar = go.transform.Find("E_Canvas").Find("HPBar").GetComponent<Slider>();
+        stat.hpBar.maxValue = hp;
         stat.HP = hp;
         stat.Name = name;
         stat.SetIndex = index;
@@ -106,6 +109,8 @@ public class TeamMember
         stat.Defense = defence;
         stat.Speed = speed;
         stat.ModelName = modelName;
+
+        go.transform.Find("E_Canvas").gameObject.SetActive(false);
 
         return go;
     }

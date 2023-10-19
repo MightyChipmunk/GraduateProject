@@ -36,10 +36,22 @@ public class BattleManager : MonoBehaviour
                 {
                     value = 0;
                 }
+
+                for (int i = 0; i < turnInfoList.Count; i++)
+                {
+                    GameObject tmp = turnInfoList[i];
+                    Color col;
+                    col = tmp.transform.Find("BG").GetComponent<Image>().color;
+                    col.a = 0.5f;
+                    tmp.transform.Find("BG").GetComponent<Image>().color = col;
+                }
+
                 iTween.MoveTo(downArrow, iTween.Hash("x", enemyList[value].transform.position.x, "y", 4, "z", enemyList[value].transform.position.z, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
                 Transform tr = turn[0].transform;
                 Vector3 dir = Quaternion.LookRotation(enemyList[value].transform.position - tr.position).eulerAngles;
                 iTween.RotateTo(Camera.main.transform.parent.gameObject, iTween.Hash("y", dir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
+
+                TurnHilight(enemyList[value]);
             }
             selected = value;
             if (!IsGameOver())
@@ -70,10 +82,10 @@ public class BattleManager : MonoBehaviour
         {
             if (myTurn() && !isAction && !IsGameOver())
             {
-                Command command = new Command(0, playerList.IndexOf(turn[0]), selected, 0);
+                Command command = new Command(0, playerList.IndexOf(turn[0]), selected, NetworkManager.Instance.userId);
                 string data = JsonUtility.ToJson(command);
                 if (NetworkManager.Instance.IsConnected())
-                    NetworkManager.Instance.Send(data, 0);
+                    NetworkManager.Instance.Send(data, 3);
                 else
                     ExcuteCommand(command);
                 commands.Add(command);
@@ -82,16 +94,17 @@ public class BattleManager : MonoBehaviour
             {
                 isAction = false;
                 MoveCam(false);
+                TurnHilight(enemyList[selected]);
             }
         });
         skill.onClick.AddListener(() =>
         {
             if (myTurn() && !isAction && !IsGameOver())
             {
-                Command command = new Command(1, playerList.IndexOf(turn[0]), selected, 0);
+                Command command = new Command(1, playerList.IndexOf(turn[0]), selected, NetworkManager.Instance.userId);
                 string data = JsonUtility.ToJson(command);
                 if (NetworkManager.Instance.IsConnected())
-                    NetworkManager.Instance.Send(data, 0);
+                    NetworkManager.Instance.Send(data, 3);
                 else
                     ExcuteCommand(command);
                 commands.Add(command);
@@ -100,6 +113,7 @@ public class BattleManager : MonoBehaviour
             {
                 isAction = false;
                 MoveCam(false);
+                TurnHilight(enemyList[selected]);
             }
         });
     }
@@ -121,7 +135,7 @@ public class BattleManager : MonoBehaviour
         // юс╫ц
         if (!myTurn() && !isAction && !IsGameOver() && !NetworkManager.Instance.IsConnected())
         {
-            Command command = new Command(0, enemyList.IndexOf(turn[0]), 0, 1);
+            Command command = new Command(0, enemyList.IndexOf(turn[0]), 0);
             ExcuteCommand(command);
             commands.Add(command);
         }
@@ -247,13 +261,28 @@ public class BattleManager : MonoBehaviour
         turnInfoList.Clear();
 
         List<GameObject> allList = new List<GameObject> ();
-        foreach (GameObject go in playerList)
+
+        if (NetworkManager.Instance.cnt <= 1)
         {
-            allList.Add(go);
+            foreach (GameObject go in playerList)
+            {
+                allList.Add(go);
+            }
+            foreach (GameObject go in enemyList)
+            {
+                allList.Add(go);
+            }
         }
-        foreach (GameObject go in enemyList)
+        else if (NetworkManager.Instance.cnt >= 2)
         {
-            allList.Add(go);
+            foreach (GameObject go in enemyList)
+            {
+                allList.Add(go);
+            }
+            foreach (GameObject go in playerList)
+            {
+                allList.Add(go);
+            }
         }
 
         int cnt = allList.Count;
@@ -290,6 +319,20 @@ public class BattleManager : MonoBehaviour
         info.transform.position = new Vector3(150, 930 - 100 * turnInfoList.Count, 0);
         info.transform.localScale = Vector3.zero;
         iTween.ScaleTo(info, iTween.Hash("x", 1, "y", 1, "z", 1, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
+
+        if (playerList.Contains(go))
+        {
+            Color col = Color.blue;
+            col.a = 0.5f;
+            info.transform.Find("BG").GetComponent<Image>().color = col;
+        }
+        else
+        {
+            Color col = Color.red;
+            col.a = 0.5f;
+            info.transform.Find("BG").GetComponent<Image>().color = col;
+        }
+
         turnInfoList.Add(info);
     }
 
@@ -332,6 +375,21 @@ public class BattleManager : MonoBehaviour
         turn.Remove(target);
     }
 
+    void TurnHilight(GameObject go)
+    {
+        for (int i = 0; i < turnInfoList.Count; i++)
+        {
+            if (turnInfoList[i].GetComponent<TurnInfo>().target == go)
+            {
+                GameObject tmp = turnInfoList[i];
+                Color col;
+                col = tmp.transform.Find("BG").GetComponent<Image>().color;
+                col.a = 1;
+                tmp.transform.Find("BG").GetComponent<Image>().color = col;
+            }
+        }
+    }
+
     public void CharDestroy(GameObject go)
     {
         if (playerList.Contains(go))
@@ -368,15 +426,26 @@ public class BattleManager : MonoBehaviour
         Stat attacker;
         Stat deffender;
 
-        if (command.team == 0)
+        if (command.id == NetworkManager.Instance.userId)
         {
             attacker = playerList[command.attackerIdx].GetComponent<Stat>();
             deffender = enemyList[command.deffenderIdx].GetComponent<Stat>();
         }
         else
         {
+            for (int i = 0; i < turnInfoList.Count; i++)
+            {
+                GameObject tmp = turnInfoList[i];
+                Color col;
+                col = tmp.transform.Find("BG").GetComponent<Image>().color;
+                col.a = 0.5f;
+                tmp.transform.Find("BG").GetComponent<Image>().color = col;
+            }
+
             attacker = enemyList[command.attackerIdx].GetComponent<Stat>();
             deffender = playerList[command.deffenderIdx].GetComponent<Stat>();
+
+            TurnHilight(attacker.gameObject);
         }
 
 
@@ -394,6 +463,9 @@ public class BattleManager : MonoBehaviour
     private void OnDestroy()
     {
         if (NetworkManager.Instance.IsConnected())
+        {
             NetworkManager.Instance.CloseNet();
+            NetworkManager.Instance.cnt = 0;
+        }
     }
 }

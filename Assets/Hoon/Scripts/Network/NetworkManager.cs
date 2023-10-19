@@ -22,6 +22,9 @@ public class NetworkManager : MonoBehaviour
     [HideInInspector]
     public Reward reward;
 
+    // 임시
+    public string userId;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -34,28 +37,37 @@ public class NetworkManager : MonoBehaviour
 
         DontDestroyOnLoad(Instance);
 
-        playerTeam = new Team(playerMembers);
+        reward = new Reward();
+        playerTeam = new Team(playerMembers, userId);
     }
 
     private void Update()
     {
-        string data = tcpInterface.RecvMessage();
-        if (data != null)
+
+    }
+    
+    public int cnt = 0;
+    public void Receive(string data)
+    {
+        // 만약 서버로부터 Command 정보를 받는다면
+        if (data[2] == 'a')
         {
-            // 만약 서버로부터 Command 정보를 받는다면
-            if (data[2] == 'a')
+            // 역직렬화 후 커맨드 실행
+            Command command = JsonUtility.FromJson<Command>(data);
+            BattleManager.Instance.ExcuteCommand(command);
+        }
+        // 만약 서버로부터 팀 정보를 받는다면
+        else if (data[2] == 'u')
+        {
+            // 역직렬화 후 팀의 정보 저장
+            Team team = JsonUtility.FromJson<Team>(data);
+            cnt++;
+            // 받은 팀의 정보가 상대팀이라면
+            if (team.userId != this.userId)
             {
-                // 역직렬화 후 커맨드 실행
-                Command command = JsonUtility.FromJson<Command>(data);
-                BattleManager.Instance.ExcuteCommand(command);
-            }
-            // 만약 서버로부터 팀 정보를 받는다면
-            else if (data[2] == 'm')
-            {
-                // 역직렬화 후 상대팀의 정보 저장
-                enemyTeam = JsonUtility.FromJson<Team>(data);
-                // PVP 시작 (서버에 연결되어 있으니 자신은 PVP 준비 한 상태)
-                //PVPStart();
+                // PVP 시작 
+                enemyTeam = team;
+                PVPStart();
             }
         }
     }
@@ -81,7 +93,6 @@ public class NetworkManager : MonoBehaviour
     // PVP가 준비됐다면 서버에 연결 후 자신의 팀 정보를 직렬화 하고 서버에 보냄
     public void PVPReady()
     {
-        TCPStart();
         string data = JsonUtility.ToJson(playerTeam);
 
         Send(data, 1);

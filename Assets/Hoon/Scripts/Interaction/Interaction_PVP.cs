@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class Interaction_PVP : Interaction
 {
+    bool isConnected = false;
+
     protected override void Start()
     {
         base.Start();
@@ -14,7 +16,12 @@ public class Interaction_PVP : Interaction
 
     protected override void Interact()
     {
-        NetworkManager.Instance.PVPReady();
-        //SceneManager.LoadScene("BattleScene");
+        if (isConnected)
+            NetworkManager.Instance.PVPReady();
+        else
+        {
+            NetworkManager.Instance.TCPStart();
+            isConnected = true;
+        }
     }
 }
