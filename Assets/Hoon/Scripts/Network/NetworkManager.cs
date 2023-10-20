@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,6 +25,10 @@ public class NetworkManager : MonoBehaviour
 
     // 임시
     public string userId;
+    public TMP_InputField input;
+
+    public int cnt = 0;
+    public bool isReady = false;
 
     // Start is called before the first frame update
     void Awake()
@@ -38,7 +43,12 @@ public class NetworkManager : MonoBehaviour
         DontDestroyOnLoad(Instance);
 
         reward = new Reward();
-        playerTeam = new Team(playerMembers, userId);
+
+        input.onEndEdit.AddListener((string s) =>
+        {
+            userId = s;
+            playerTeam = new Team(playerMembers, userId);
+        });
     }
 
     private void Update()
@@ -46,7 +56,6 @@ public class NetworkManager : MonoBehaviour
 
     }
     
-    public int cnt = 0;
     public void Receive(string data)
     {
         // 만약 서버로부터 Command 정보를 받는다면

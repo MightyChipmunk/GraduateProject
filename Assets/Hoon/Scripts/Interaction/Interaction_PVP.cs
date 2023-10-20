@@ -16,8 +16,11 @@ public class Interaction_PVP : Interaction
 
     protected override void Interact()
     {
-        if (isConnected)
+        if (isConnected && !NetworkManager.Instance.isReady)
+        {
             NetworkManager.Instance.PVPReady();
+            NetworkManager.Instance.isReady = true;
+        }
         else
         {
             NetworkManager.Instance.TCPStart();
