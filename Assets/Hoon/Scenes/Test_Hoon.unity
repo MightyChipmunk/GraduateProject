@@ -502,7 +502,7 @@ MonoBehaviour:
   reward:
     gold: 0
     exp: 0
-  userId: Player2
+  userId: Player12
   cnt: 0
 --- !u!4 &1371906060
 Transform:
