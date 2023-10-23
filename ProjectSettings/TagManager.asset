@@ -9,6 +9,7 @@ TagManager:
   - BattleCamera
   - FxTemporaire
   - UICamera
+  - PostCamera
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Light
   - Player
   - EyesHL
   - Character

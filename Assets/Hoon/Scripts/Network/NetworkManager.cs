@@ -24,7 +24,7 @@ public class NetworkManager : MonoBehaviour
     public Reward reward;
 
     // юс╫ц
-    public string userId;
+    public string userId = "";
     public TMP_InputField input;
 
     public int cnt = 0;
@@ -43,6 +43,7 @@ public class NetworkManager : MonoBehaviour
         DontDestroyOnLoad(Instance);
 
         reward = new Reward();
+        playerTeam = new Team(playerMembers, userId);
 
         input.onEndEdit.AddListener((string s) =>
         {

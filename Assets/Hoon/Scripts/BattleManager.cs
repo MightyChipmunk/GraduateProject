@@ -15,6 +15,7 @@ public class BattleManager : MonoBehaviour
     public Transform canvas;
     public Button attack;
     public Button skill;
+    public Image icon;
     public bool isAction = false;
     public bool atkBtnSelected = false;
     public bool skillBtnSelected = false;
@@ -85,7 +86,7 @@ public class BattleManager : MonoBehaviour
                     ExcuteCommand(command);
                 commands.Add(command);
             }
-            else if (!atkBtnSelected)
+            else if (!atkBtnSelected && myTurn())
             {
                 atkBtnSelected = true;
                 skillBtnSelected = false;
@@ -105,7 +106,7 @@ public class BattleManager : MonoBehaviour
                     ExcuteCommand(command);
                 commands.Add(command);
             }
-            else if (!skillBtnSelected)
+            else if (!skillBtnSelected && myTurn())
             {
                 atkBtnSelected = false;
                 skillBtnSelected = true;
@@ -163,6 +164,9 @@ public class BattleManager : MonoBehaviour
         InitTurn();
         MoveCam();
 
+        if (myTurn())
+            PlayerIcon(turn[0].GetComponent<Stat>());
+
         BattleUIManager.Instance.StartUI();
         BattleUIManager.Instance.reward = reward;
         yield return new WaitForSeconds(3f);
@@ -193,6 +197,7 @@ public class BattleManager : MonoBehaviour
         {
             TurnHilightOff();
             EnemyInfoSet(enemyList[selected].GetComponent<Stat>());
+            PlayerIcon(turn[0].GetComponent<Stat>());
         }
 
         isAction = false;
@@ -319,7 +324,7 @@ public class BattleManager : MonoBehaviour
 
         GameObject info = Instantiate(turnInfo, canvas);
         info.GetComponent<TurnInfo>().Init(Resources.Load<Sprite>(go.GetComponent<Stat>().ModelName + "Icon"), go.GetComponent<Stat>().Name, go);
-        info.transform.position = new Vector3(150 + 100 * turnInfoList.Count, 930 , 0);
+        info.transform.position = new Vector3(150 + 100 * turnInfoList.Count, 980 , 0);
         info.transform.localScale = Vector3.zero;
         iTween.ScaleTo(info, iTween.Hash("x", 1, "y", 1, "z", 1, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
 
@@ -405,6 +410,11 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    void PlayerIcon(Stat stat)
+    {
+        icon.sprite = Resources.Load<Sprite>(stat.ModelName + "Icon");
+    }
+
     public void CharDestroy(GameObject go)
     {
         if (playerList.Contains(go))
@@ -454,6 +464,7 @@ public class BattleManager : MonoBehaviour
             deffender = playerList[command.deffenderIdx].GetComponent<Stat>();
 
             TurnHilight(attacker.gameObject);
+            PlayerIcon(deffender);
         }
 
 

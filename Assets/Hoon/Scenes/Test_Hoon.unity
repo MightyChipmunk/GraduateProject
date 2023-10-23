@@ -691,6 +691,7 @@ MonoBehaviour:
   userId: Player12
   input: {fileID: 1713680339}
   cnt: 0
+  isReady: 0
 --- !u!4 &1371906060
 Transform:
   m_ObjectHideFlags: 0
@@ -1746,6 +1747,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3180517173839854601, guid: 69284aea04165db44aa992a13be19ff6,
+        type: 3}
+      propertyPath: enemyMembers.Array.data[2].strength
+      value: 23
+      objectReference: {fileID: 0}
     - target: {fileID: 4018342796087809002, guid: 69284aea04165db44aa992a13be19ff6,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2740965711067221937}
   - component: {fileID: 4149088829622134633}
   - component: {fileID: 3396934349626808857}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: E_Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,6 +135,7 @@ Transform:
   m_Children:
   - {fileID: 1770906924380747762}
   - {fileID: 7731271326910705264}
+  - {fileID: 8550420129447032637}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &3360818274001011650
@@ -1391,11 +1392,98 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyStat: {fileID: 0}
+  effect1: {fileID: 2799185400841471811}
+  effect2: {fileID: 462885203468646323, guid: dc02389bdb164704bbb7935363fb76bb, type: 3}
 --- !u!4 &7731271326910705264 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3161517029609158813, guid: 2174b7c0d515d9c4bb5ff2ccf89e280c,
     type: 3}
   m_PrefabInstance: {fileID: 4653635357594572525}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5214215976711256673
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 876947983304174269}
+    m_Modifications:
+    - target: {fileID: 4536721316752936284, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4536721316752936284, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4536721316752936284, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4536721316752936284, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4536721316752936284, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4536721316752936284, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4536721316752936284, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4536721316752936284, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4536721316752936284, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4536721316752936284, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963535690553621794, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_Name
+      value: Lightning aura
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963535690553621794, guid: 1590ed46335a50c4199209737adc9a60,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1590ed46335a50c4199209737adc9a60, type: 3}
+--- !u!1 &2799185400841471811 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7963535690553621794, guid: 1590ed46335a50c4199209737adc9a60,
+    type: 3}
+  m_PrefabInstance: {fileID: 5214215976711256673}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8550420129447032637 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4536721316752936284, guid: 1590ed46335a50c4199209737adc9a60,
+    type: 3}
+  m_PrefabInstance: {fileID: 5214215976711256673}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5746191204477178643
 PrefabInstance:
@@ -1423,22 +1511,22 @@ PrefabInstance:
     - target: {fileID: 1172211332497918460, guid: 9c81d18e6a299d04a8883ba093fb0ead,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1262530439956833491, guid: 9c81d18e6a299d04a8883ba093fb0ead,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6051663609883258271, guid: 9c81d18e6a299d04a8883ba093fb0ead,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8704747442100542773, guid: 9c81d18e6a299d04a8883ba093fb0ead,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8806555228145937699, guid: 9c81d18e6a299d04a8883ba093fb0ead,
         type: 3}
@@ -1563,6 +1651,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Staff_Epic
+      objectReference: {fileID: 0}
+    - target: {fileID: 5875270693028758024, guid: 3058356566addd04d8ab52928169b5e2,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6540061452467591346, guid: 3058356566addd04d8ab52928169b5e2,
         type: 3}

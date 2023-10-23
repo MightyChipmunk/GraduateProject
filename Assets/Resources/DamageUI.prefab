@@ -85,7 +85,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &3074643313838936291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,8 +182,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 96
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ade2286ff1277a348a08aed066120424, type: 2}
-  m_sharedMaterial: {fileID: 1012672207835618577, guid: ade2286ff1277a348a08aed066120424,
+  m_fontAsset: {fileID: 11400000, guid: 1d13a6f5dc06c444a8d8d248a4115a4a, type: 2}
+  m_sharedMaterial: {fileID: 8856554802628751487, guid: 1d13a6f5dc06c444a8d8d248a4115a4a,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

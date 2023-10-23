@@ -70,7 +70,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.57923496
+      - time: 0.32269046
         functionName: Skill
         data: 
         objectReferenceParameter: {instanceID: 0}
