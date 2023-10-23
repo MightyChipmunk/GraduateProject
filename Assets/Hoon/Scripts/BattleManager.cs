@@ -221,6 +221,8 @@ public class BattleManager : MonoBehaviour
         else
         {
             Transform tr = turn[0].transform;
+            Vector3 dir = Quaternion.identity.eulerAngles;
+            iTween.RotateTo(Camera.main.transform.parent.gameObject, iTween.Hash("y", dir.y, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
             iTween.MoveTo(Camera.main.transform.parent.gameObject, iTween.Hash("x", tr.position.x, "y", tr.position.y, "z", tr.position.z - 5.5, "time", 0.2f, "easetype", iTween.EaseType.easeOutQuint));
             EnemyInfoSet(tr.GetComponent<Stat>());
         }
@@ -317,7 +319,7 @@ public class BattleManager : MonoBehaviour
 
         GameObject info = Instantiate(turnInfo, canvas);
         info.GetComponent<TurnInfo>().Init(Resources.Load<Sprite>(go.GetComponent<Stat>().ModelName + "Icon"), go.GetComponent<Stat>().Name, go);
-        info.transform.position = new Vector3(150, 930 - 100 * turnInfoList.Count, 0);
+        info.transform.position = new Vector3(150 + 100 * turnInfoList.Count, 930 , 0);
         info.transform.localScale = Vector3.zero;
         iTween.ScaleTo(info, iTween.Hash("x", 1, "y", 1, "z", 1, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
 
@@ -345,7 +347,7 @@ public class BattleManager : MonoBehaviour
 
         foreach (GameObject go in turnInfoList)
         {
-            iTween.MoveTo(go, iTween.Hash("y", go.transform.position.y + 100, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
+            iTween.MoveTo(go, iTween.Hash("x", go.transform.position.x - 100, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
         }
 
         GameObject dequeue = turn[0];
@@ -370,7 +372,7 @@ public class BattleManager : MonoBehaviour
 
         for (int i = idx; i < turnInfoList.Count; i++)
         {
-            iTween.MoveTo(turnInfoList[i], iTween.Hash("y", turnInfoList[i].transform.position.y + 100, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
+            iTween.MoveTo(turnInfoList[i], iTween.Hash("x", turnInfoList[i].transform.position.x - 100, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
         }
 
         turn.Remove(target);
