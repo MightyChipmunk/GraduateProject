@@ -133,7 +133,8 @@ public class BattleManager : MonoBehaviour
         // юс╫ц
         if (!myTurn() && !isAction && !IsGameOver() && !NetworkManager.Instance.IsConnected())
         {
-            Command command = new Command(0, enemyList.IndexOf(turn[0]), 0);
+            int ran = Random.Range(0, playerList.Count);
+            Command command = new Command(0, enemyList.IndexOf(turn[0]), ran);
             ExcuteCommand(command);
             commands.Add(command);
         }
