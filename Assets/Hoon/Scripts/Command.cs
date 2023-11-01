@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [Serializable]
 public class Command
@@ -17,5 +18,22 @@ public class Command
         attackerIdx = atk;
         deffenderIdx = def;
         this.id = id;
+    }
+}
+
+[Serializable]
+public class CommandList
+{
+    public List<Command> commands;
+
+    public CommandList()
+    {
+        commands = new List<Command>();
+    }
+
+    public void Add(Command com, UnityAction callback)
+    {
+        commands.Add(com);
+        callback();
     }
 }

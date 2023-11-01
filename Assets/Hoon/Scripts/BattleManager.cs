@@ -21,7 +21,7 @@ public class BattleManager : MonoBehaviour
     public bool skillBtnSelected = false;
     public static BattleManager Instance;
 
-    List<Command> commands = new List<Command>();
+    CommandList comList;
 
     int selected = 0;
     public int Selected
@@ -68,6 +68,8 @@ public class BattleManager : MonoBehaviour
             Destroy(Instance);
             Instance = this;
         }
+
+        comList = new CommandList();
     }
 
     private void Start()
@@ -84,7 +86,6 @@ public class BattleManager : MonoBehaviour
                     NetworkManager.Instance.Send(data, 3);
                 else
                     ExcuteCommand(command);
-                commands.Add(command);
             }
             else if (!atkBtnSelected && myTurn())
             {
@@ -104,7 +105,6 @@ public class BattleManager : MonoBehaviour
                     NetworkManager.Instance.Send(data, 3);
                 else
                     ExcuteCommand(command);
-                commands.Add(command);
             }
             else if (!skillBtnSelected && myTurn())
             {
@@ -136,10 +136,42 @@ public class BattleManager : MonoBehaviour
             int ran = Random.Range(0, playerList.Count);
             Command command = new Command(0, enemyList.IndexOf(turn[0]), ran);
             ExcuteCommand(command);
-            commands.Add(command);
+        }
+
+        if (myTurn() && !isAction && !IsGameOver())
+        {
+            AutoAtk();
         }
 
         downArrow.SetActive(myTurn() && !IsGameOver() && !isAction && (atkBtnSelected || skillBtnSelected));
+    }
+
+    void AutoAtk()
+    {
+        selected = Random.Range(0, enemyList.Count);
+        int catRan = Random.Range(0, 2);
+
+        if (catRan == 0)
+        {
+            atkBtnSelected = true;
+            skillBtnSelected = false;
+            MoveCam(false);
+            TurnHilight(enemyList[selected]);
+        }
+        else if (catRan == 1)
+        {
+            atkBtnSelected = false;
+            skillBtnSelected = true;
+            MoveCam(false);
+            TurnHilight(enemyList[selected]);
+        }
+
+        Command command = new Command(catRan, playerList.IndexOf(turn[0]), selected, NetworkManager.Instance.userId);
+        string data = JsonUtility.ToJson(command);
+        if (NetworkManager.Instance.IsConnected())
+            NetworkManager.Instance.Send(data, 3);
+        else
+            ExcuteCommand(command);
     }
 
     IEnumerator StartBattle(Team playerTeam, Team enemyTeam, Reward reward)
@@ -325,7 +357,7 @@ public class BattleManager : MonoBehaviour
 
         GameObject info = Instantiate(turnInfo, canvas);
         info.GetComponent<TurnInfo>().Init(Resources.Load<Sprite>(go.GetComponent<Stat>().ModelName + "Icon"), go.GetComponent<Stat>().Name, go);
-        info.transform.position = new Vector3(150 + 100 * turnInfoList.Count, 980 , 0);
+        info.transform.position = new Vector3(Screen.width * 0.078f + Screen.width * 0.051f * turnInfoList.Count, Screen.height * 0.9f, 0);
         info.transform.localScale = Vector3.zero;
         iTween.ScaleTo(info, iTween.Hash("x", 1, "y", 1, "z", 1, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
 
@@ -353,7 +385,7 @@ public class BattleManager : MonoBehaviour
 
         foreach (GameObject go in turnInfoList)
         {
-            iTween.MoveTo(go, iTween.Hash("x", go.transform.position.x - 100, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
+            iTween.MoveTo(go, iTween.Hash("x", go.transform.position.x - Screen.width * 0.051f, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
         }
 
         GameObject dequeue = turn[0];
@@ -378,7 +410,7 @@ public class BattleManager : MonoBehaviour
 
         for (int i = idx; i < turnInfoList.Count; i++)
         {
-            iTween.MoveTo(turnInfoList[i], iTween.Hash("x", turnInfoList[i].transform.position.x - 100, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
+            iTween.MoveTo(turnInfoList[i], iTween.Hash("x", turnInfoList[i].transform.position.x - Screen.width * 0.051f, "time", 0.3f, "easetype", iTween.EaseType.easeOutQuint));
         }
 
         turn.Remove(target);
@@ -468,7 +500,6 @@ public class BattleManager : MonoBehaviour
             PlayerIcon(deffender);
         }
 
-
         switch (command.actionCategory)
         {
             case (0):
@@ -478,6 +509,12 @@ public class BattleManager : MonoBehaviour
                 attacker.Skill(deffender);
                 break;
         }
+
+        comList.Add(command, () =>
+        {
+            string data = JsonUtility.ToJson(command);
+            Debug.Log(data);
+        });
     }
 
     private void OnDestroy()

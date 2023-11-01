@@ -27,8 +27,8 @@ public class BattleUIManager : MonoBehaviour
 
     public void StartUI()
     {
-        iTween.MoveTo(startUI, iTween.Hash("x", 960, "time", 1, "easetype", iTween.EaseType.easeOutQuint));
-        iTween.MoveTo(startUI, iTween.Hash("x", 2880, "time", 1, "delay", 1.5f, "easetype", iTween.EaseType.easeInQuint));
+        iTween.MoveTo(startUI, iTween.Hash("x", Screen.width / 2, "time", 1, "easetype", iTween.EaseType.easeOutQuint));
+        iTween.MoveTo(startUI, iTween.Hash("x", Screen.width * 1.5f, "time", 1, "delay", 1.5f, "easetype", iTween.EaseType.easeInQuint));
     }
 
     public void EndUI(bool isWin)

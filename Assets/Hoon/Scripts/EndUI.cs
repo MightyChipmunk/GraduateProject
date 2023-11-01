@@ -12,7 +12,7 @@ public class EndUI : MonoBehaviour
     public void Init(Reward reward, bool isWin)
     {
         win.text = isWin ? "Ω¬∏Æ!" : "∆–πË..";
-        gold.text = isWin ? "»πµÊ«— ∞ÒµÂ: " + reward.gold.ToString() : "»πµÊ«— ∞ÒµÂ: 0";
-        exp.text = isWin ? "»πµÊ«— ∞Ê«Ëƒ°: " + reward.exp.ToString() : "»πµÊ«— ∞Ê«Ëƒ°: 0";
+        gold.text = isWin ? reward.gold.ToString() : "0";
+        exp.text = isWin ? reward.exp.ToString() : "0";
     }
 }
