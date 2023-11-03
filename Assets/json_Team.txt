@@ -1,22 +1,10 @@
 {
-    "members": [
-        {
-            "hp": 150,
-            "name": "p1",
-            "index": 0,
-            "modelName": "UnityChan",
-            "strength": 200,
-            "defence": 0,
-            "speed": 30
-        },
-        {
-            "hp": 200,
-            "name": "p2",
-            "index": 1,
-            "modelName": "UnityChan",
-            "strength": 20,
-            "defence": 0,
-            "speed": 20
-        }
-    ]
+    "hp": 150,
+    "name": "p1",
+    "modelName": "UnityChan",
+    "strength": 200,
+    "defence": 0,
+    "speed": 30,
+    "skillLv": 1,
+    "equipLv": 1
 }
