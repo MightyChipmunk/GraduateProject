@@ -10,6 +10,9 @@ TagManager:
   - FxTemporaire
   - UICamera
   - PostCamera
+  - Coinbox
+  - Item
+  - MultiplayNPC
   layers:
   - Default
   - TransparentFX
