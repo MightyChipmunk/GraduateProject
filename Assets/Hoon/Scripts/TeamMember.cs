@@ -85,6 +85,8 @@ public class TeamMember
         stat.Defense = defence;
         stat.Speed = speed;
         stat.ModelName = modelName;
+        stat.skillLv = skillLv;
+        stat.equipLv = equipLv;
 
         go.transform.Find("E_Canvas").gameObject.SetActive(false);
 

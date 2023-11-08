@@ -21,6 +21,8 @@ public class LoginManager : MonoBehaviour
     public Button login;
     public Button signUpOpen;
     public Button signUp;
+    public Button quitBtn;
+    public GameObject popup;
     string id;
     string pw;
     // Start is called before the first frame update
@@ -29,8 +31,9 @@ public class LoginManager : MonoBehaviour
         idInput.onEndEdit.AddListener((string s) => id = s);
         pwInput.onEndEdit.AddListener((string s) => pw = s);
         login.onClick.AddListener(() => StartCoroutine("Login"));
-        signUpOpen.onClick.AddListener(() => signUp.transform.Find("SignUpUI").gameObject.SetActive(true));
+        signUpOpen.onClick.AddListener(() => signUpOpen.transform.Find("SignUpUI").gameObject.SetActive(true));
         signUp.onClick.AddListener(() => StartCoroutine("SignUp"));
+        quitBtn.onClick.AddListener(() => signUpOpen.transform.Find("SignUpUI").gameObject.SetActive(false));
     }
 
     // Update is called once per frame
@@ -85,6 +88,9 @@ public class LoginManager : MonoBehaviour
             else
             {
                 Debug.Log("SignUp complete!");
+                signUpOpen.transform.Find("SignUpUI").gameObject.SetActive(false);
+                iTween.ScaleTo(popup, iTween.Hash("x", 1, "y", 1, "z", 1, "time", 0.5f, "easetype", iTween.EaseType.easeOutCirc));
+                iTween.ScaleTo(popup, iTween.Hash("x", 0, "y", 0, "z", 0, "time", 0.5f, "delay", 1.5f, "easetype", iTween.EaseType.easeOutCirc));
             }
         }
     }

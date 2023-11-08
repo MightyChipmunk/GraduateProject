@@ -7,30 +7,10 @@ using UnityEngine.UI;
 
 public class APIManager : MonoBehaviour
 {
-    //public Button swSkill1;
-    //public Button swSkill2;
-    //public Button swSkill3;
-    //public Button arSkill1;
-    //public Button arSkill2;
-    //public Button arSkill3;
-    //public Button maSkill1;
-    //public Button maSkill2;
-    //public Button maSkill3;
-
-    //public Button swEquip1;
-    //public Button swEquip2;
-    //public Button swEquip3;
-    //public Button arEquip1;
-    //public Button arEquip2;
-    //public Button arEquip3;
-    //public Button maEquip1;
-    //public Button maEquip2;
-    //public Button maEquip3;
-
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        DontDestroyOnLoad(gameObject);
     }
 
     // Update is called once per frame
@@ -39,15 +19,37 @@ public class APIManager : MonoBehaviour
         
     }
 
-    
-    public void StatUp()
+    public void SkillUp(string modelNameLv)
     {
-        //string modelName = modelNameLv.Substring(0, modelNameLv.Length - 1);
-        //int lv = Int32.Parse(modelNameLv.Substring(modelNameLv.Length - 1, 1));
+        string modelName = modelNameLv.Substring(0, modelNameLv.Length - 1);
+        int lv = Int32.Parse(modelNameLv.Substring(modelNameLv.Length - 1, 1));
 
-        NetworkManager.Instance.playerTeam.members[0].hp += 20;
+        foreach (TeamMember mem in NetworkManager.Instance.playerTeam.members)
+        {
+            if (mem.modelName == modelName && mem.skillLv < lv)
+            {
+                mem.skillLv = lv;
+                StartCoroutine(StatUpCo(mem));
+            }
+        }
+    }
 
-        StartCoroutine(StatUpCo(NetworkManager.Instance.playerTeam.members[0]));
+    public void EquipUp(string modelNameLv)
+    {
+        string modelName = modelNameLv.Substring(0, modelNameLv.Length - 1);
+        int lv = Int32.Parse(modelNameLv.Substring(modelNameLv.Length - 1, 1));
+
+        foreach (TeamMember mem in NetworkManager.Instance.playerTeam.members)
+        {
+            if (mem.modelName == modelName && mem.equipLv < lv)
+            {
+                mem.hp += 15 * (lv - mem.equipLv);
+                mem.strength += 5 * (lv - mem.equipLv);
+                mem.defence += 3 * (lv - mem.equipLv);
+                mem.equipLv = lv;
+                StartCoroutine(StatUpCo(mem));
+            }
+        }
     }
 
     IEnumerator StatUpCo(TeamMember mem)

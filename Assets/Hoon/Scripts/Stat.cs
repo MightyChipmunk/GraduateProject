@@ -69,6 +69,9 @@ public class Stat : MonoBehaviour
     string modelName;
     public string ModelName { get { return modelName; } set { modelName = value; } }
 
+    public int skillLv;
+    public int equipLv;
+
     public int[] Near()
     {
         int[] near = new int[2];

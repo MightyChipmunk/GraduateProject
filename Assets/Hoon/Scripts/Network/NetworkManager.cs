@@ -140,6 +140,13 @@ public class NetworkManager : MonoBehaviour
         {
             playerTeam.exp -= 100;
             playerTeam.level++;
+            foreach (TeamMember mem in playerTeam.members)
+            {
+                mem.hp += 20;
+                mem.strength += 5;
+                mem.defence += 3;
+            }
+            // API 호출 필요
         }
     }
 }
