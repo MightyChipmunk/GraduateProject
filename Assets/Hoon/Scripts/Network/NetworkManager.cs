@@ -51,8 +51,6 @@ public class NetworkManager : MonoBehaviour
             playerTeam = new Team(playerMembers, userId);
         });
 
-        FullScreenMode mode = FullScreenMode.Windowed;
-        Screen.SetResolution(160, 90, mode);
         Application.targetFrameRate = 15;
     }
 
