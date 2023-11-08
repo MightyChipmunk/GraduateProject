@@ -8,32 +8,21 @@ using UnityEngine.UI;
 [Serializable]
 public class Team
 {
+    public int level;
+    public int gold;
+    public int exp;
     public string userId = "";
 
     public List<TeamMember> members = new List<TeamMember>();
     public List<TeamMember> Members
     {
         get { return members; }
-        set
-        {
-            members = value;
-            int idx = 0;
-            foreach (TeamMember member in members)
-            {
-                member.SetIndex = idx++;
-            }
-        }
     }
 
     public Team(List<TeamMember> list, string id = "")
     {
         userId = id;
         members = list;
-        int idx = 0;
-        foreach (TeamMember member in members)
-        {
-            member.SetIndex = idx++;
-        }
     }
 
     public TeamMember GetIndexMember(int index)
@@ -46,36 +35,17 @@ public class Team
 [Serializable]
 public class TeamMember
 {
+    [SerializeField]
+    int id = 0;
     public string userId = "";
-
-    [SerializeField]
-    int hp = 0;
-
-    [SerializeField]
-    string name;
-
-    [SerializeField]
-    int index;
-    public int GetIndex { get { return index; } }
-    public int SetIndex { set { index = value; } }
-
-    [SerializeField]
-    string modelName;
-
-    [SerializeField]
-    int strength;
-
-    [SerializeField]
-    int defence;
-
-    [SerializeField]
-    int speed;
-
-    [SerializeField]
-    int skillLv;
-
-    [SerializeField]
-    int equipLv;
+    public int hp = 0;
+    public string name;
+    public string modelName;
+    public int strength;
+    public int defence;
+    public int speed;
+    public int skillLv;
+    public int equipLv;
 
     public TeamMember(int hp, string name, string modelName)
     {
@@ -93,7 +63,6 @@ public class TeamMember
         stat.hpBar.maxValue = hp;
         stat.HP = hp;
         stat.Name = name;
-        stat.SetIndex = index;
         stat.Strength = strength;
         stat.Defense = defence;
         stat.Speed = speed;
@@ -112,7 +81,6 @@ public class TeamMember
         stat.HP = hp;
         stat.chName = chInfo.GetComponentInChildren<TMP_Text>();
         stat.Name = name;
-        stat.SetIndex = index;
         stat.Strength= strength;
         stat.Defense = defence;
         stat.Speed = speed;

@@ -149,7 +149,7 @@ public class BattleManager : MonoBehaviour
         foreach (TeamMember mem in enemyTeam.Members)
         {
             GameObject newMem = mem.Instantiate();
-            newMem.transform.position = new Vector3(-3 * mem.GetIndex, 0, 6);
+            newMem.transform.position = new Vector3(-3 * enemyTeam.Members.IndexOf(mem), 0, 6);
             newMem.transform.rotation = Quaternion.LookRotation(Vector3.back);
             enemyList.Add(newMem);
         }
@@ -157,7 +157,7 @@ public class BattleManager : MonoBehaviour
         {
             GameObject info = Instantiate(charInfo, content);
             GameObject newMem = mem.Instantiate(info);
-            newMem.transform.position = new Vector3(-3 * mem.GetIndex, 0, 0);
+            newMem.transform.position = new Vector3(-3 * playerTeam.Members.IndexOf(mem), 0, 0);
             playerList.Add(newMem);
         }
 
@@ -443,6 +443,8 @@ public class BattleManager : MonoBehaviour
                 BattleUIManager.Instance.EndUI(true);
             else 
                 BattleUIManager.Instance.EndUI(false);
+            NetworkManager.Instance.GetReward();
+
             return true;
         }
     }

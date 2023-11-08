@@ -13,10 +13,6 @@ public class NetworkManager : MonoBehaviour
     public static NetworkManager Instance;
     ClientInterface tcpInterface = new ClientInterface();
 
-    [SerializeField]
-    List<TeamMember> playerMembers;
-
-    [HideInInspector]
     public Team playerTeam;
     [HideInInspector]
     public Team enemyTeam;
@@ -25,7 +21,6 @@ public class NetworkManager : MonoBehaviour
 
     // юс╫ц
     public string userId = "";
-    public TMP_InputField input;
 
     public int cnt = 0;
     public bool isReady = false;
@@ -37,19 +32,12 @@ public class NetworkManager : MonoBehaviour
             Instance = this;
         else
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
 
         DontDestroyOnLoad(Instance);
 
         reward = new Reward();
-        playerTeam = new Team(playerMembers, userId);
-
-        input.onEndEdit.AddListener((string s) =>
-        {
-            userId = s;
-            playerTeam = new Team(playerMembers, userId);
-        });
     }
 
     private void Update()
@@ -141,5 +129,17 @@ public class NetworkManager : MonoBehaviour
     {
         tcpInterface.CloseAll();
         tcpInterface = new ClientInterface();
+    }
+
+    public void GetReward()
+    {
+        playerTeam.gold += reward.gold;
+        playerTeam.exp += reward.exp;
+
+        if (playerTeam.exp >= 100)
+        {
+            playerTeam.exp -= 100;
+            playerTeam.level++;
+        }
     }
 }
