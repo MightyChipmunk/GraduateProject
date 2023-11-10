@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class ActionController : MonoBehaviour
-{
+public class ActionController : MonoBehaviour { }
+/*{
 
     [SerializeField]
     private float range; //습득 가능한 최대 거리
@@ -78,3 +78,4 @@ public class ActionController : MonoBehaviour
         actionText.gameObject.SetActive(false);
     }
 }
+*/
