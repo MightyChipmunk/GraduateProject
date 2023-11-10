@@ -12,7 +12,7 @@ public class Kohaku_Action : AnimationEvent
     {
         base.Skill();
 
-        int damage = (int)((float)playerStat.Strength * 2.5f - enemyStat.Defense);
+        int damage = (int)((float)playerStat.Strength * (2 + playerStat.skillLv * 0.5f) - enemyStat.Defense);
         enemyStat.HP -= damage;
         enemyStat.GetHit(damage);
     }
