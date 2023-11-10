@@ -11,6 +11,7 @@ public class Team
     public int level;
     public int gold;
     public int exp;
+    public int stones;
     public string userId = "";
 
     public List<TeamMember> members = new List<TeamMember>();

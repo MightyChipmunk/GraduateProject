@@ -42,7 +42,7 @@ public class NetworkManager : MonoBehaviour
 
     private void Update()
     {
-
+        
     }
     
     public void Receive(string data)
@@ -145,8 +145,9 @@ public class NetworkManager : MonoBehaviour
                 mem.hp += 20;
                 mem.strength += 5;
                 mem.defence += 3;
+                APIManager.Instance.StatUp(mem);
             }
-            // API 호출 필요
         }
+        APIManager.Instance.UpdateUserInfo();
     }
 }

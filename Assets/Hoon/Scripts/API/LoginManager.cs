@@ -17,19 +17,25 @@ public class UserLoginInfo
 public class LoginManager : MonoBehaviour
 {
     public TMP_InputField idInput;
+    public TMP_InputField signUpIdInput;
     public TMP_InputField pwInput;
+    public TMP_InputField signupPwInput;
     public Button login;
     public Button signUpOpen;
     public Button signUp;
     public Button quitBtn;
     public GameObject popup;
     string id;
+    string signUpId;
     string pw;
+    string signUpPw;
     // Start is called before the first frame update
     void Start()
     {
         idInput.onEndEdit.AddListener((string s) => id = s);
         pwInput.onEndEdit.AddListener((string s) => pw = s);
+        signUpIdInput.onEndEdit.AddListener((string s) => signUpId = s);
+        signupPwInput.onEndEdit.AddListener((string s) => signUpPw = s);
         login.onClick.AddListener(() => StartCoroutine("Login"));
         signUpOpen.onClick.AddListener(() => signUpOpen.transform.Find("SignUpUI").gameObject.SetActive(true));
         signUp.onClick.AddListener(() => StartCoroutine("SignUp"));
@@ -69,8 +75,8 @@ public class LoginManager : MonoBehaviour
     IEnumerator SignUp()
     {
         UserLoginInfo loginInfo = new UserLoginInfo();
-        loginInfo.userId = id;
-        loginInfo.userPwd = pw;
+        loginInfo.userId = signUpId;
+        loginInfo.userPwd = signUpPw;
         string jsonLoginInfo = JsonUtility.ToJson(loginInfo);
 
         using (UnityWebRequest www = UnityWebRequest.PostWwwForm("http://43.202.59.52:8081/makeId", jsonLoginInfo))

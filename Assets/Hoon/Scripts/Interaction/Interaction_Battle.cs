@@ -9,12 +9,17 @@ public class Interaction_Battle : Interaction
     Team enemyTeam;
     public Reward reward;
 
-    protected override void Start()
+    void Awake()
     {
         base.Start();
         interUI = GameObject.Find("Battle Interaction");
-        interUI.SetActive(false);
         enemyTeam = new Team(enemyMembers);
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        interUI.SetActive(false);
     }
 
     protected override void Interact()

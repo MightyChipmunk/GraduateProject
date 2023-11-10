@@ -14,18 +14,9 @@ public class GameManager : MonoBehaviour
     public TMP_Text playerRockTxt;
     public TMP_Text playerCoinTxt;
 
-
-    /*void Awake()
-    {
-        maxScoreTxt.text = string.Format("{0:n0}", PlayerPrefs.GetInt("MaxScore"));
-    }*/
-
     void LateUpdate()
     {
-        playerRockTxt.text = string.Format("{0:n0}", player.rock);
-        playerCoinTxt.text = string.Format("{0:n0}", player.coin);
+        playerRockTxt.text = string.Format("{0:n0}", NetworkManager.Instance.playerTeam.stones);
+        playerCoinTxt.text = string.Format("{0:n0}", NetworkManager.Instance.playerTeam.gold);
     }
-
-
-
 }

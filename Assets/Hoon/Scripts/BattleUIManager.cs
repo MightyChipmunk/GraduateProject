@@ -37,6 +37,7 @@ public class BattleUIManager : MonoBehaviour
 
         endUI.SetActive(true);
         endUI.GetComponent<EndUI>().Init(reward, isWin);
+        NetworkManager.Instance.GetReward();
     }
 
     public void ActionName(string act)

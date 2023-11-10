@@ -7,16 +7,26 @@ using UnityEngine.UI;
 
 public class APIManager : MonoBehaviour
 {
+    public static APIManager Instance;
     // Start is called before the first frame update
     void Awake()
     {
+        Instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            UpdateUserInfo();
+        }
+    }
+
+    public void UpdateUserInfo()
+    {
+        StartCoroutine(UserUpCo());
     }
 
     public void SkillUp(string modelNameLv)
@@ -52,11 +62,39 @@ public class APIManager : MonoBehaviour
         }
     }
 
+    public void StatUp(TeamMember mem)
+    {
+        StartCoroutine(StatUpCo(mem));
+    }
+
     IEnumerator StatUpCo(TeamMember mem)
     {
         string data = JsonUtility.ToJson(mem);
 
         using (UnityWebRequest www = UnityWebRequest.PostWwwForm("http://43.202.59.52:8081/updateCharacter", data))
+        {
+            byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(data);
+            www.uploadHandler = new UploadHandlerRaw(jsonToSend);
+            www.SetRequestHeader("Content-Type", "application/json");
+
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Update complete!");
+            }
+        }
+    }
+
+    IEnumerator UserUpCo()
+    {
+        string data = JsonUtility.ToJson(NetworkManager.Instance.playerTeam);
+
+        using (UnityWebRequest www = UnityWebRequest.PostWwwForm("http://43.202.59.52:8081/updateUser", data))
         {
             byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(data);
             www.uploadHandler = new UploadHandlerRaw(jsonToSend);

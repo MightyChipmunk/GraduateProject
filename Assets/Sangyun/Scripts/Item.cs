@@ -1,23 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 //[CreateAssetMenu(fileName = "New Item" , menuName = "New Item/item")]
-public class Item : MonoBehaviour
+public class Item : Interaction
 {
-
     public string itemName; //아이템의 이름
     public Type type; //아이템의 유형
     public Sprite itemImage; //아이템의 이미지
     public int value;
-    //public GameObject itemPrefab; //아이템 프리팹
-
-    //public string weaponType;
 
     public enum Type
     {
         Rock,
         Coin
-    };
+    }
 
+    void Awake()
+    {
+        interUI = GameObject.Find("Item Interaction");
+    }
+
+    protected override void Start()
+    {
+        interUI.SetActive(false);
+    }
+
+    protected override void Interact()
+    {
+        switch (type)
+        {
+            case Item.Type.Rock:
+                NetworkManager.Instance.playerTeam.stones += value;
+                break;
+            case Item.Type.Coin:
+                NetworkManager.Instance.playerTeam.gold += value;
+                break;
+        }
+        APIManager.Instance.UpdateUserInfo();
+        interUI.SetActive(false);
+        Destroy(gameObject);
+    }
 }

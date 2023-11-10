@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
@@ -140,6 +141,11 @@ public class BattleManager : MonoBehaviour
         }
 
         downArrow.SetActive(myTurn() && !IsGameOver() && !isAction && (atkBtnSelected || skillBtnSelected));
+
+        if (IsGameOver() && Input.GetKeyDown(KeyCode.Return))
+        {
+            SceneManager.LoadScene("Test_Hoon");
+        }
     }
 
     IEnumerator StartBattle(Team playerTeam, Team enemyTeam, Reward reward)
@@ -443,7 +449,6 @@ public class BattleManager : MonoBehaviour
                 BattleUIManager.Instance.EndUI(true);
             else 
                 BattleUIManager.Instance.EndUI(false);
-            NetworkManager.Instance.GetReward();
 
             return true;
         }
