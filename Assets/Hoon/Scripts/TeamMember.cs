@@ -81,7 +81,20 @@ public class TeamMember
         stat.hpBar.maxValue = hp;
         stat.HP = hp;
         stat.chName = chInfo.GetComponentInChildren<TMP_Text>();
-        stat.Name = name;
+        
+        switch (modelName)
+        {
+            case ("UnityChan"):
+                stat.Name = "마법사";
+                break;
+            case ("UnityChanKohaku"):
+                stat.Name = "검사";
+                break;
+            case ("UnityChanKAGURA"):
+                stat.Name = "궁수";
+                break;
+        }
+
         stat.Strength= strength;
         stat.Defense = defence;
         stat.Speed = speed;
