@@ -24,11 +24,11 @@ public class LoginManager : MonoBehaviour
     public Button signUpOpen;
     public Button signUp;
     public Button quitBtn;
-    public GameObject popup;
     string id;
     string signUpId;
     string pw;
     string signUpPw;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -95,8 +95,7 @@ public class LoginManager : MonoBehaviour
             {
                 Debug.Log("SignUp complete!");
                 signUpOpen.transform.Find("SignUpUI").gameObject.SetActive(false);
-                iTween.ScaleTo(popup, iTween.Hash("x", 1, "y", 1, "z", 1, "time", 0.5f, "easetype", iTween.EaseType.easeOutCirc));
-                iTween.ScaleTo(popup, iTween.Hash("x", 0, "y", 0, "z", 0, "time", 0.5f, "delay", 1.5f, "easetype", iTween.EaseType.easeOutCirc));
+                PopUp.Instance.Pop("회원가입 완료!");
             }
         }
     }

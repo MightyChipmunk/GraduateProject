@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
 
     float ySpeed = 0;
 
+    public bool canMove = true;
+
     // State Parameters for Animation
     enum State
     {
@@ -53,6 +55,8 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
+        if (!canMove) return;
+
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
@@ -80,6 +84,8 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
+        if (!canMove) return;
+
         if (Input.GetKeyDown(KeyCode.Space) && cc.isGrounded)
         {
             ySpeed = jumpPower;

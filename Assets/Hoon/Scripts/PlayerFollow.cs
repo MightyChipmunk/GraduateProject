@@ -10,6 +10,9 @@ public class PlayerFollow : MonoBehaviour
     float rotSpeed = 100f;
     float mx;
     float my;
+
+    public bool canMove = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +26,8 @@ public class PlayerFollow : MonoBehaviour
 
         float mh = Input.GetAxis("Mouse X");
         float mv = Input.GetAxis("Mouse Y");
+
+        if (!canMove) return;
 
         mx += mh * rotSpeed * Time.deltaTime;
         my += mv * rotSpeed * Time.deltaTime;

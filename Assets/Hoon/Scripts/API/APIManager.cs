@@ -18,10 +18,7 @@ public class APIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            UpdateUserInfo();
-        }
+
     }
 
     public void UpdateUserInfo()
@@ -31,7 +28,8 @@ public class APIManager : MonoBehaviour
 
     public void SkillUp(string modelNameLv)
     {
-        if (NetworkManager.Instance.playerTeam.stones <= 0) {
+        if (NetworkManager.Instance.playerTeam.stones <= 1) {
+            PopUp.Instance.Pop("강화석이 부족합니다!");
             return;
         }
 
@@ -44,20 +42,23 @@ public class APIManager : MonoBehaviour
             {
                 mem.skillLv = lv;
                 StartCoroutine(StatUpCo(mem));
-                NetworkManager.Instance.playerTeam.stones--;
+                NetworkManager.Instance.playerTeam.stones -= 2;
                 UpdateUserInfo();
+                PopUp.Instance.Pop("강화 완료!");
             }
         }
     }
 
     public void EquipUp(string modelNameLv)
     {
-        if (NetworkManager.Instance.playerTeam.gold <= 99) {
+        string modelName = modelNameLv.Substring(0, modelNameLv.Length - 1);
+        int lv = Int32.Parse(modelNameLv.Substring(modelNameLv.Length - 1, 1)); 
+        
+        if (NetworkManager.Instance.playerTeam.gold < lv * 1000)
+        {
+            PopUp.Instance.Pop("골드가 부족합니다!");
             return;
         }
-
-        string modelName = modelNameLv.Substring(0, modelNameLv.Length - 1);
-        int lv = Int32.Parse(modelNameLv.Substring(modelNameLv.Length - 1, 1));
 
         foreach (TeamMember mem in NetworkManager.Instance.playerTeam.members)
         {
@@ -68,8 +69,9 @@ public class APIManager : MonoBehaviour
                 mem.defence += 3 * (lv - mem.equipLv);
                 mem.equipLv = lv;
                 StartCoroutine(StatUpCo(mem));
-                NetworkManager.Instance.playerTeam.gold -= 100;
+                NetworkManager.Instance.playerTeam.gold -= lv * 1000;
                 UpdateUserInfo();
+                PopUp.Instance.Pop("강화 완료!");
             }
         }
     }
