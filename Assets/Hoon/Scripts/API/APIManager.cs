@@ -31,6 +31,10 @@ public class APIManager : MonoBehaviour
 
     public void SkillUp(string modelNameLv)
     {
+        if (NetworkManager.Instance.playerTeam.stones <= 0) {
+            return;
+        }
+
         string modelName = modelNameLv.Substring(0, modelNameLv.Length - 1);
         int lv = Int32.Parse(modelNameLv.Substring(modelNameLv.Length - 1, 1));
 
@@ -48,6 +52,10 @@ public class APIManager : MonoBehaviour
 
     public void EquipUp(string modelNameLv)
     {
+        if (NetworkManager.Instance.playerTeam.gold <= 99) {
+            return;
+        }
+
         string modelName = modelNameLv.Substring(0, modelNameLv.Length - 1);
         int lv = Int32.Parse(modelNameLv.Substring(modelNameLv.Length - 1, 1));
 
