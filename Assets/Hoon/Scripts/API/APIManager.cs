@@ -60,6 +60,8 @@ public class APIManager : MonoBehaviour
                 mem.defence += 3 * (lv - mem.equipLv);
                 mem.equipLv = lv;
                 StartCoroutine(StatUpCo(mem));
+                NetworkManager.Instance.playerTeam.gold -= 100;
+                UpdateUserInfo();
             }
         }
     }
