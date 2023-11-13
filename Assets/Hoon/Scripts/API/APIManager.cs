@@ -40,6 +40,8 @@ public class APIManager : MonoBehaviour
             {
                 mem.skillLv = lv;
                 StartCoroutine(StatUpCo(mem));
+                NetworkManager.Instance.playerTeam.stones--;
+                UpdateUserInfo();
             }
         }
     }
