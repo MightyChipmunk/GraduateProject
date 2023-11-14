@@ -55,7 +55,7 @@ public class NetworkManager : MonoBehaviour
             BattleManager.Instance.ExcuteCommand(command);
         }
         // 만약 서버로부터 팀 정보를 받는다면
-        else if (data[2] == 'u')
+        else if (data[2] == 'l')
         {
             // 역직렬화 후 팀의 정보 저장
             Team team = JsonUtility.FromJson<Team>(data);

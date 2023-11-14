@@ -22,8 +22,10 @@ public class AnimationEvent : MonoBehaviour
     protected virtual void Attack()
     {
         BattleManager.Instance.EnemyInfoSet(enemyStat);
-        enemyStat.HP -= (playerStat.Strength - enemyStat.Defense);
-        enemyStat.GetHit(playerStat.Strength - enemyStat.Defense);
+        int damage = playerStat.Strength - enemyStat.Defense;
+        damage = Mathf.Clamp(damage, 0, 999);
+        enemyStat.HP -= damage;
+        enemyStat.GetHit(damage);
     }
 
     protected virtual void Skill()

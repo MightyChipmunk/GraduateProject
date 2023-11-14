@@ -16,6 +16,7 @@ public class UnityChan_Action : AnimationEvent
         base.Skill();
 
         int damage = (int)((float)playerStat.Strength * (2 + playerStat.skillLv * 0.5f) - enemyStat.Defense);
+        damage = Mathf.Clamp(damage, 0, 999);
         enemyStat.HP -= damage;
         enemyStat.GetHit(damage);
 
