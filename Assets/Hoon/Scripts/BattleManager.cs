@@ -151,7 +151,7 @@ public class BattleManager : MonoBehaviour
         while(true)
         {
             yield return null;
-            if (myTurn())
+            if (myTurn() && !isAction)
             {
                 time += Time.deltaTime;
             }
@@ -322,6 +322,8 @@ public class BattleManager : MonoBehaviour
         turnInfoList.Clear();
 
         List<GameObject> allList = new List<GameObject> ();
+
+        Debug.Log(NetworkManager.Instance.cnt);
 
         if (NetworkManager.Instance.cnt <= 1)
         {
@@ -533,7 +535,7 @@ public class BattleManager : MonoBehaviour
         comList.Add(command, () =>
         {
             string data = JsonUtility.ToJson(command);
-            Debug.Log(data);
+            //Debug.Log(data);
         });
     }
 
