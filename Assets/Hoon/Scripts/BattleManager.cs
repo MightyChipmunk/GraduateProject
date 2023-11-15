@@ -114,6 +114,8 @@ public class BattleManager : MonoBehaviour
                 TurnHilight(enemyList[selected]);
             }
         });
+
+        StartCoroutine("AutoAtk");
     }
 
     private void Update()
@@ -138,40 +140,52 @@ public class BattleManager : MonoBehaviour
             ExcuteCommand(command);
         }
 
-        if (myTurn() && !isAction && !IsGameOver())
-        {
-            AutoAtk();
-        }
+        
 
         downArrow.SetActive(myTurn() && !IsGameOver() && !isAction && (atkBtnSelected || skillBtnSelected));
     }
 
-    void AutoAtk()
+    IEnumerator AutoAtk()
     {
-        selected = Random.Range(0, enemyList.Count);
-        int catRan = Random.Range(0, 2);
-
-        if (catRan == 0)
+        float time = 0;
+        while(true)
         {
-            atkBtnSelected = true;
-            skillBtnSelected = false;
-            MoveCam(false);
-            TurnHilight(enemyList[selected]);
-        }
-        else if (catRan == 1)
-        {
-            atkBtnSelected = false;
-            skillBtnSelected = true;
-            MoveCam(false);
-            TurnHilight(enemyList[selected]);
-        }
+            yield return null;
+            if (myTurn())
+                time += Time.deltaTime;
+            if (time <= 3)
+                continue;
 
-        Command command = new Command(catRan, playerList.IndexOf(turn[0]), selected, NetworkManager.Instance.userId);
-        string data = JsonUtility.ToJson(command);
-        if (NetworkManager.Instance.IsConnected())
-            NetworkManager.Instance.Send(data, 3);
-        else
-            ExcuteCommand(command);
+            if (myTurn() && !isAction && !IsGameOver())
+            {
+                selected = Random.Range(0, enemyList.Count);
+                int catRan = Random.Range(0, 2);
+
+                if (catRan == 0)
+                {
+                    atkBtnSelected = true;
+                    skillBtnSelected = false;
+                    MoveCam(false);
+                    TurnHilight(enemyList[selected]);
+                }
+                else if (catRan == 1)
+                {
+                    atkBtnSelected = false;
+                    skillBtnSelected = true;
+                    MoveCam(false);
+                    TurnHilight(enemyList[selected]);
+                }
+
+                Command command = new Command(catRan, playerList.IndexOf(turn[0]), selected, NetworkManager.Instance.userId);
+                string data = JsonUtility.ToJson(command);
+                if (NetworkManager.Instance.IsConnected())
+                    NetworkManager.Instance.Send(data, 3);
+                else
+                    ExcuteCommand(command);
+
+                time = 0;
+            }
+        }
     }
 
     IEnumerator StartBattle(Team playerTeam, Team enemyTeam, Reward reward)
