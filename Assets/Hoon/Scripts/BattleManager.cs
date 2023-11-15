@@ -152,7 +152,13 @@ public class BattleManager : MonoBehaviour
         {
             yield return null;
             if (myTurn())
+            {
                 time += Time.deltaTime;
+            }
+            else
+            {
+                time = 0;
+            }
             if (time <= 3)
                 continue;
 
