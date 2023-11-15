@@ -492,6 +492,7 @@ public class BattleManager : MonoBehaviour
         if (NetworkManager.Instance.IsConnected())
         {
             NetworkManager.Instance.CloseNet();
+            NetworkManager.Instance.isReady = false;
             NetworkManager.Instance.cnt = 0;
         }
     }
