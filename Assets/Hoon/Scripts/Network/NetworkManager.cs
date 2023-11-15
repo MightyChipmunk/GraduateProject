@@ -43,20 +43,31 @@ public class NetworkManager : MonoBehaviour
         DontDestroyOnLoad(Instance);
 
         reward = new Reward();
+        int ran = UnityEngine.Random.Range(0, 999999);
+        userId = ran.ToString();
         playerTeam = new Team(playerMembers, userId);
-
-        input.onEndEdit.AddListener((string s) =>
-        {
-            userId = s;
-            playerTeam = new Team(playerMembers, userId);
-        });
 
         Application.targetFrameRate = 15;
     }
 
+    bool isConnected = false;
+    private void Start()
+    {
+        
+    }
+
     private void Update()
     {
-
+        if (isConnected && !NetworkManager.Instance.isReady)
+        {
+            NetworkManager.Instance.PVPReady();
+            NetworkManager.Instance.isReady = true;
+        }
+        else if (!isConnected)
+        {
+            NetworkManager.Instance.TCPStart();
+            isConnected = true;
+        }
     }
     
     public void Receive(string data)
