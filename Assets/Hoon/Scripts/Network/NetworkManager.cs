@@ -51,12 +51,7 @@ public class NetworkManager : MonoBehaviour
     }
 
     bool isConnected = false;
-    private void Start()
-    {
-        
-    }
-
-    private void Update()
+    private IEnumerator Start()
     {
         if (isConnected && !NetworkManager.Instance.isReady)
         {
@@ -68,6 +63,24 @@ public class NetworkManager : MonoBehaviour
             NetworkManager.Instance.TCPStart();
             isConnected = true;
         }
+
+        yield return new WaitForSeconds(2);
+
+        if (isConnected && !NetworkManager.Instance.isReady)
+        {
+            NetworkManager.Instance.PVPReady();
+            NetworkManager.Instance.isReady = true;
+        }
+        else if (!isConnected)
+        {
+            NetworkManager.Instance.TCPStart();
+            isConnected = true;
+        }
+    }
+
+    private void Update()
+    {
+        
     }
     
     public void Receive(string data)
